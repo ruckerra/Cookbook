@@ -33,6 +33,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.TextBox txtRecipeName;
 
         /// <summary>
+        /// rfvRecipeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvRecipeName;
+
+        /// <summary>
         /// txtPrepTime control.
         /// </summary>
         /// <remarks>
@@ -42,6 +51,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.TextBox txtPrepTime;
 
         /// <summary>
+        /// rfvPrepTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPrepTime;
+
+        /// <summary>
         /// txtTotalTime control.
         /// </summary>
         /// <remarks>
@@ -49,6 +67,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTotalTime;
+
+        /// <summary>
+        /// rfvTotalTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTotalTime;
 
         /// <summary>
         /// chkGlutenFree control.
@@ -78,6 +105,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.DropDownList ddType;
 
         /// <summary>
+        /// rfvType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvType;
+
+        /// <summary>
         /// txtIngredients control.
         /// </summary>
         /// <remarks>
@@ -87,6 +123,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.TextBox txtIngredients;
 
         /// <summary>
+        /// rfvIngredients control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvIngredients;
+
+        /// <summary>
         /// txtDirections control.
         /// </summary>
         /// <remarks>
@@ -94,6 +139,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDirections;
+
+        /// <summary>
+        /// rfvDirections control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDirections;
 
         /// <summary>
         /// txtNotes control.
@@ -132,21 +186,30 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.Button btnCancel;
 
         /// <summary>
-        /// pnlViewRecentRecipes control.
+        /// lblFeedback control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlViewRecentRecipes;
+        protected global::System.Web.UI.WebControls.Label lblFeedback;
 
         /// <summary>
-        /// gvRecentRecipes control.
+        /// pnlDisplayRecipes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvRecentRecipes;
+        protected global::System.Web.UI.WebControls.Panel pnlDisplayRecipes;
+
+        /// <summary>
+        /// gvDisplayRecipes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvDisplayRecipes;
     }
 }

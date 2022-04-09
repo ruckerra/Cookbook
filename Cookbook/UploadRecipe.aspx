@@ -8,6 +8,7 @@
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtRecipeName" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvRecipeName" runat="server" ErrorMessage="Required" ControlToValidate="txtRecipeName" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -16,6 +17,7 @@
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtPrepTime" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvPrepTime" runat="server" ErrorMessage="Required" ControlToValidate="txtPrepTime" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -24,6 +26,7 @@
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtTotalTime" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvTotalTime" runat="server" ErrorMessage="Required" ControlToValidate="txtTotalTime" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -47,7 +50,7 @@
                 <label for="ddType">Type: </label>
             </div>
             <div class="col-md-10">
-                <asp:DropDownList ID="ddType" runat="server">
+                <asp:DropDownList ID="ddType" runat="server" CssClass="dropdown">
                     <asp:ListItem>Breakfast</asp:ListItem>
                     <asp:ListItem>Lunch</asp:ListItem>
                     <asp:ListItem>Dinner</asp:ListItem>
@@ -57,6 +60,7 @@
                     <asp:ListItem>Brunch</asp:ListItem>
                     <asp:ListItem>Linner</asp:ListItem>
                 </asp:DropDownList>
+                <asp:RequiredFieldValidator ID="rfvType" runat="server" ErrorMessage="Required" ControlToValidate="ddType" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -65,6 +69,7 @@
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtIngredients" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvIngredients" runat="server" ErrorMessage="Required" ControlToValidate="txtIngredients" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -73,6 +78,7 @@
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtDirections" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvDirections" runat="server" ErrorMessage="Required" ControlToValidate="txtDirections" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
             </div>
         </div>
         <div class="row">
@@ -85,19 +91,30 @@
         </div>
         <div class="row">
             <div class ="col-md-6">
-                <asp:Button ID="btnSave" runat="server" Text="Save" />
-                <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" />
-                <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" />
+                <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
+                <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" />
+                <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" CssClass="btn btn-secondary"/>
+                <asp:Label ID="lblFeedback" runat="server" Text="" Visible ="False"></asp:Label>
             </div>
         </div>
 
     </asp:Panel>
-    <asp:Panel ID="pnlViewRecentRecipes" runat="server">
-        <asp:GridView ID="gvRecentRecipes" runat="server">
-            <EmptyDataTemplate>
-                <asp:Button ID="btnEdit" runat="server" CssClass="btn-primary" Text="Edit" />
-                <asp:Button ID="btnDelete" runat="server" CssClass="btn-danger" Text="Delete" />
-            </EmptyDataTemplate>
+    <asp:Panel ID="pnlDisplayRecipes" runat="server">
+        <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id">
+
+            <Columns>
+                <asp:BoundField DataField="recipe_id" HeaderText="ID" />
+                <asp:BoundField DataField="recipe_name" HeaderText="Name" />
+                <asp:BoundField DataField="ingredients" HeaderText="Ingredients" />
+                <asp:BoundField DataField="total_time" HeaderText="Estimated Time" />
+                <asp:TemplateField HeaderText="Actions">
+                    <ItemTemplate>
+                        <asp:Button ID="btnEdit" runat="server" CssClass="btn btn-primary" Text="Edit" />
+                        <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete" Width="61px" OnClientClick="return confirm('Are you sure you want to delete this recipe?');" CommandName="Delete" CommandArgument="recipe_id" />
+                    </ItemTemplate>
+                </asp:TemplateField>
+            </Columns>
+
         </asp:GridView>
     </asp:Panel>
 
