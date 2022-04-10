@@ -24,6 +24,24 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.Panel PnlRegister;
 
         /// <summary>
+        /// usernameReject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label usernameReject;
+
+        /// <summary>
+        /// emailReject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label emailReject;
+
+        /// <summary>
         /// rfvUsername control.
         /// </summary>
         /// <remarks>
@@ -51,6 +69,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmail;
 
         /// <summary>
+        /// regexvEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator regexvEmail;
+
+        /// <summary>
         /// TxtbxRegEmail control.
         /// </summary>
         /// <remarks>
@@ -67,6 +94,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmailCheck;
+
+        /// <summary>
+        /// cmpvEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CompareValidator cmpvEmail;
 
         /// <summary>
         /// TxtbxEmailCheck control.
@@ -87,6 +123,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
 
         /// <summary>
+        /// regexvPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator regexvPassword;
+
+        /// <summary>
         /// TxtbxRegPassword control.
         /// </summary>
         /// <remarks>
@@ -103,6 +148,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPasswordCheck;
+
+        /// <summary>
+        /// cmpvPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CompareValidator cmpvPassword;
 
         /// <summary>
         /// TxtbxPasswordCheck control.
