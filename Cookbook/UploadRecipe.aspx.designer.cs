@@ -195,6 +195,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.Label lblFeedback;
 
         /// <summary>
+        /// lblRecipeId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecipeId;
+
+        /// <summary>
         /// pnlDisplayRecipes control.
         /// </summary>
         /// <remarks>

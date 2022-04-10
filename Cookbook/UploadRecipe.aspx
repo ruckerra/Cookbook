@@ -92,15 +92,16 @@
         <div class="row">
             <div class ="col-md-6">
                 <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
-                <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" />
-                <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" CssClass="btn btn-secondary"/>
+                <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" OnClick="btnUpdate_Click" />
+                <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" CssClass="btn btn-secondary" OnClick="btnCancel_Click"/>
                 <asp:Label ID="lblFeedback" runat="server" Text="" Visible ="False"></asp:Label>
+                <asp:Label ID="lblRecipeId" runat="server" Text="Label" Visible ="false"></asp:Label>
             </div>
         </div>
 
     </asp:Panel>
     <asp:Panel ID="pnlDisplayRecipes" runat="server">
-        <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id">
+        <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id" OnRowCommand="gvDisplayRecipes_RowCommand" OnRowCreated="gvDisplayRecipes_RowCreated" OnRowDataBound="gvDisplayRecipes_RowDataBound">
 
             <Columns>
                 <asp:BoundField DataField="recipe_id" HeaderText="ID" />
@@ -109,8 +110,8 @@
                 <asp:BoundField DataField="total_time" HeaderText="Estimated Time" />
                 <asp:TemplateField HeaderText="Actions">
                     <ItemTemplate>
-                        <asp:Button ID="btnEdit" runat="server" CssClass="btn btn-primary" Text="Edit" />
-                        <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete" Width="61px" OnClientClick="return confirm('Are you sure you want to delete this recipe?');" CommandName="Delete" CommandArgument="recipe_id" />
+                        <asp:Button ID="btnEdit" runat="server" CssClass="btn btn-primary" Text="Edit" CommandName="EditRecipe" />
+                        <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete" Width="61px" OnClientClick="return confirm('Are you sure you want to delete this recipe?');" CommandName="DeleteRecipe" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
