@@ -16,26 +16,31 @@ namespace Cookbook
         {
             if (!Page.IsPostBack)
             {
-                using(SqlConnection conn = new SqlConnection())
-                {
-                    conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-   
-                    SqlDataAdapter sda = new SqlDataAdapter();
-                    DataTable dt = new DataTable();
-                    SqlCommand cmd = new SqlCommand();
+                BindRecipeList();
+            }
+        }
 
-                    cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes ORDER BY recipe_id DESC";
-                    cmd.Connection = conn;
-                    sda.SelectCommand = cmd;
+        private void BindRecipeList()
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
-                    conn.Open();
-                    sda.Fill(dt);
+                SqlDataAdapter sda = new SqlDataAdapter();
+                DataTable dt = new DataTable();
+                SqlCommand cmd = new SqlCommand();
 
-                    gvDisplayRecipes.DataSource = dt;
-                    gvDisplayRecipes.DataBind();
+                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes ORDER BY recipe_id DESC";
+                cmd.Connection = conn;
+                sda.SelectCommand = cmd;
+
+                conn.Open();
+                sda.Fill(dt);
+
+                gvDisplayRecipes.DataSource = dt;
+                gvDisplayRecipes.DataBind();
 
 
-                }
             }
         }
 
@@ -82,6 +87,8 @@ namespace Cookbook
                 ddType.SelectedIndex = 0;
                 chkGlutenFree.Checked = false;
                 chkVegetarian.Checked = false;
+
+                BindRecipeList();
             }
         }
     }
