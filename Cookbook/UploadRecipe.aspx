@@ -101,7 +101,7 @@
 
     </asp:Panel>
     <asp:Panel ID="pnlDisplayRecipes" runat="server">
-        <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id" OnRowCommand="gvDisplayRecipes_RowCommand" OnRowCreated="gvDisplayRecipes_RowCreated" OnRowDataBound="gvDisplayRecipes_RowDataBound">
+        <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id" OnRowCommand="gvDisplayRecipes_RowCommand" OnRowDataBound="gvDisplayRecipes_RowDataBound">
 
             <Columns>
                 <asp:BoundField DataField="recipe_id" HeaderText="ID" />
