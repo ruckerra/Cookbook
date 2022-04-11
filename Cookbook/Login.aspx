@@ -14,13 +14,14 @@
                         <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="TxtbxPassword" EnableTheming="True" ErrorMessage="Required*" ForeColor="Red" ValidationGroup="Login"></asp:RequiredFieldValidator>
                         <asp:TextBox ID="TxtbxPassword" runat="server" type="Password" placeholder="Password" CssClass="form-control"></asp:TextBox>
                         <br />
-                        <div style="inline-block">&nbsp</div>
+                        <div style="display:inline-block">&nbsp</div>
                         <asp:Button ID="BtnSubmit" runat="server" style="margin-bottom:1rem" Text="Log In" CssClass="btn btn-primary btn-block" class="form-control" ValidationGroup="Login" OnClick="BtnSubmit_Click"/>
                         <a>
                             <asp:Button ID="BtnRegister" runat="server" style="margin-bottom:1rem" Text="Create an Account" CssClass="btn btn-secondary btn-block" class="form-control" OnClick="BtnRegister_Click"/>
                         </a>
                     </div>
-                <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
+                </div>
             </div>
     </asp:Panel>
     <br/>
