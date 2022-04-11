@@ -24,6 +24,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.Panel PnlLogin;
 
         /// <summary>
+        /// reject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label reject;
+
+        /// <summary>
         /// rfvUsername control.
         /// </summary>
         /// <remarks>
@@ -33,13 +42,13 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUsername;
 
         /// <summary>
-        /// TxtbxUsername control.
+        /// TxtbxIdentifier control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtbxUsername;
+        protected global::System.Web.UI.WebControls.TextBox TxtbxIdentifier;
 
         /// <summary>
         /// rfvPassword control.

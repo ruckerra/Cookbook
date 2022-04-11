@@ -113,7 +113,7 @@ namespace Cookbook
                 EditRecipeById(recipeid);
             }
 
-            else if (e.CommandName == "Delete Category")
+            else if (e.CommandName == "DeleteRecipe")
             {
                 int recipeid = int.Parse(e.CommandArgument.ToString());
                 DeleteRecipeById(recipeid);
