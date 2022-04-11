@@ -23,7 +23,7 @@ namespace Cookbook
         {
             using (SqlConnection conn = new SqlConnection())
             {
-                conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
                 SqlDataAdapter sda = new SqlDataAdapter();
                 DataTable dt = new DataTable();
