@@ -53,10 +53,10 @@ namespace Cookbook
                         #region Temp_Cookie
                         SiteMaster.session_uid = objUsr.ToString();
                         #endregion
+                        Response.Redirect("~/Login.aspx", true);
                     } else {
                         reject.Visible = true;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -65,7 +65,6 @@ namespace Cookbook
                 }
             }
             //Manual refresh to update master user_uid
-            Response.Redirect("~/Login.aspx", true);
         }//submit
     }//class
 }//namespace
