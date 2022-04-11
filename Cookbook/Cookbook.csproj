@@ -128,6 +128,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="LandingPage.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="RegisterAccount.aspx" />
     <Content Include="UploadRecipe.aspx" />
@@ -196,6 +197,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="LandingPage.aspx.cs">
+      <DependentUpon>LandingPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LandingPage.aspx.designer.cs">
+      <DependentUpon>LandingPage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
