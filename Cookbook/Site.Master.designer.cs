@@ -7,20 +7,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
 namespace Cookbook
 {
+
+
     public partial class SiteMaster
     {
 
         /// <summary>
-        /// HeadContent control.
+        /// session_id_label control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
+        protected global::System.Web.UI.WebControls.Label session_id_label;
+
+        /// <summary>
+        /// active_user_uid control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label active_user_uid;
 
         /// <summary>
         /// MainContent control.

@@ -63,7 +63,7 @@ namespace Cookbook
                         qry = "INSERT INTO user_details(user_uid, username, email, password) VALUES((SELECT user_uid FROM users WHERE username = @username),@username,@email,@password)";
                         cmd = new SqlCommand(qry, conn);
                         cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text);
-                        cmd.Parameters.AddWithValue("@email", TxtbxRegEmail.Text);
+                        cmd.Parameters.AddWithValue("@email", TxtbxRegEmail.Text.ToLower());
                         cmd.Parameters.AddWithValue("@password", TxtbxRegPassword.Text);
                         conn.Open();
                         cmd.ExecuteNonQuery();

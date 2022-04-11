@@ -37,6 +37,9 @@
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager>
+        
+        <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="true"></asp:Label>
+        <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="true"></asp:Label>
 
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
@@ -67,5 +70,6 @@
         </div>
 
     </form>
+    
 </body>
 </html>
