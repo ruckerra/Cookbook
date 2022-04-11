@@ -63,7 +63,9 @@ namespace Cookbook
                     Console.WriteLine("Failure to open connection");
                     throw ex;
                 }
-            }//using
+            }
+            //Manual refresh to update master user_uid
+            Response.Redirect("~/Login.aspx", true);
         }//submit
     }//class
 }//namespace
