@@ -53,7 +53,7 @@ namespace Cookbook
                         #region Temp_Cookie
                         SiteMaster.session_uid = objUsr.ToString();
                         #endregion
-                        Response.Redirect("~/Login.aspx", true);
+                        Response.Redirect("~/LandingPage.aspx", true);
                     } else {
                         reject.Visible = true;
                     }
