@@ -19,7 +19,7 @@
                     <asp:ListItem>Dessert</asp:ListItem>
                     <asp:ListItem>Snack</asp:ListItem>
                 </asp:DropDownList>
-                <asp:SqlDataSource ID="SqlRecipeTypeConnection" runat="server" ConnectionString="<%$ ConnectionStrings:Cookbook.Properties.Settings.CookbookConnectionString %>" SelectCommand="SELECT DISTINCT [denomination] FROM [recipes]"></asp:SqlDataSource>
+                <asp:SqlDataSource ID="SqlRecipeTypeConnection" runat="server" ConnectionString="<%$ ConnectionStrings:CookbookConnectionString %>" SelectCommand="SELECT DISTINCT [denomination] FROM [recipes]"></asp:SqlDataSource>
             </div>
             <div class="col-md-10">
             <asp:CheckBox ID="chkVegetarian" runat="server" Text="Vegetarian" />
