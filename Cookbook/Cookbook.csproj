@@ -167,6 +167,7 @@
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
     <Content Include="ViewSwitcher.ascx" />
+    <Content Include="ViewUsers.aspx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
     <Content Include="Site.Mobile.Master" />
@@ -252,6 +253,13 @@
     </Compile>
     <Compile Include="UploadRecipe.aspx.designer.cs">
       <DependentUpon>UploadRecipe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewUsers.aspx.cs">
+      <DependentUpon>ViewUsers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewUsers.aspx.designer.cs">
+      <DependentUpon>ViewUsers.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup />
