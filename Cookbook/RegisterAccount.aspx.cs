@@ -85,24 +85,29 @@ namespace Cookbook
 
 
         protected bool[] Solicitation(SqlConnection conn, string solicit_username, string solicit_email) {
-            string qry = "SELECT username FROM user_details WHERE username = @username";
-            string qry2 = "SELECT email FROM user_details WHERE email = @email";
-            SqlCommand cmd = new SqlCommand(qry, conn);
-            SqlCommand cmd2 = new SqlCommand(qry2, conn);
-            cmd.Parameters.AddWithValue("@username", solicit_username);
-            cmd2.Parameters.AddWithValue("@email", solicit_email);
+            string q = "SELECT username, email FROM user_details WHERE username = @username OR email = @email";
+            SqlCommand cmd = new SqlCommand(q, conn);
+            cmd.Parameters.AddWithValue("@username",solicit_username);
+            cmd.Parameters.AddWithValue("@email", solicit_email);
+           
             try
             {
                 conn.Open();
-                object objUsr = cmd.ExecuteScalar();
-                object objEml = cmd2.ExecuteScalar();
-                conn.Close();
-
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    sdr.Read();
+                }
+                else
+                {
+                    conn.Close();
+                    return new bool[] { false, false };
+                }
                 bool[] rtrn = new bool[] {
-                    objUsr != null ? objUsr.ToString() == solicit_username : false,
-                    objEml != null ? objEml.ToString() == solicit_email : false
+                    sdr["username"].ToString() == solicit_username,
+                    sdr["email"].ToString() == solicit_email
                 };
-
+                conn.Close();
                 return rtrn;
             }
             catch (Exception ex)

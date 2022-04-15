@@ -16,7 +16,7 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
 </head>
-<body>
+<body style="padding-top:0px">
     <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
@@ -38,33 +38,48 @@
             </Scripts>
         </asp:ScriptManager>
         
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="../LandingPage.aspx">Virtual Cookbook</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="../LandingPage.aspx">Search Recipes<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../UploadRecipe.aspx">Upload a Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../ViewUsers.aspx">View_Users[TESING]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../About.aspx">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Contact.aspx">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Login.aspx">Login</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <asp:TextBox ID="TxtbxSearch" runat="server" type="search" placeholder="Quick Search" CssClass="form-control mr-sm-2"></asp:TextBox>
+                    <asp:Button ID="btnSearch" runat="server" Text="Search" type="submit" CssClass="btn btn-dark my-2 my-sm-0"/>
+                </form>
+                <div class="d-flex bd-highlight ml-sm-2">
+                    <div class="ml-auto p-2 bd-highlight">
+                        <asp:ImageButton ID="userImg" runat="server" style="vertical-align:middle;border-radius:50%;width:30px;height:30px;position:relative;overflow:hidden;margin-left:-25%" src="../Content/Images/Avatars/tmp.jpg"/>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
         <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="true"></asp:Label>
         <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="true"></asp:Label>
 
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" runat="server" href="~/LandingPage">Virtual Cookbook</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a runat="server" href="~/LandingPage">Search Recipes</a></li>
-                        <li><a runat="server" href="~/UploadRecipe">Upload a Recipe</a></li>
-                        <li><a runat="server" href="~/ViewUsers">[TESTING: View Users]</a></li>
-                        <li><a runat="server" href="~/About">About</a></li>
-                        <li><a runat="server" href="~/Contact">Contact</a></li>
-                        <li><a runat="server" href="~/Login">Login</a></li>
-
-
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
