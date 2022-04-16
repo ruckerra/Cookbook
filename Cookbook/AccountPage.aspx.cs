@@ -38,7 +38,7 @@ namespace Cookbook
                         img_path = sdr["user_image_path"].ToString();
                     }
                 }
-                admin = sdr["verified"].ToString() == "True";
+                admin = sdr["admin"].ToString() == "True";
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<img class=\"float-left\" src ='/Content/Images/");
                 img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/"  + img_path;
