@@ -55,17 +55,14 @@ namespace Cookbook
 
         protected void gvDisplayUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-
             if (e.CommandName == "ReqUserDel")
             {
                 string uuid = e.CommandArgument.ToString();
-                DeleteUser(uuid);
-                if (Request.Cookies.Get("active_user_uid") != null && Request.Cookies.Get("active_user_uid").Value == uuid)
+                if (Request.Cookies.Get("active_user_uid") == null || !(Request.Cookies.Get("active_user_uid").Value == uuid))
                 {
-                    Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
+                    DeleteUser(uuid);
                 }
                 Response.Redirect("~/ViewUsers.aspx");
-                
             }
         }
 

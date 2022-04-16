@@ -3,6 +3,7 @@
     <div class="row">
         <div class="col-md-12">
             <h2>Registered User Accounts</h2>
+
             <asp:Panel ID="pnlDisplayUsers" runat="server">
                 <asp:GridView ID="gvDisplayUsers" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="user_uid" OnRowCommand="gvDisplayUsers_RowCommand" OnRowDataBound="gvDisplayUsers_RowDataBound">
                     <Columns>
