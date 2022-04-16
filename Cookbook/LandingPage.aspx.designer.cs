@@ -69,6 +69,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.CheckBox chkGlutenFree;
 
         /// <summary>
+        /// chkFavorites control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkFavorites;
+
+        /// <summary>
         /// btnSearch control.
         /// </summary>
         /// <remarks>

@@ -25,6 +25,8 @@
             <asp:CheckBox ID="chkVegetarian" runat="server" Text="Vegetarian" />
             <br />
             <asp:CheckBox ID="chkGlutenFree" runat="server" Text="Gluten Free" />
+            <br />
+            <asp:CheckBox ID="chkFavorites" runat="server" Text="Your Favorites" Visible="false"/>
             </div>     
         </div>
         <br />

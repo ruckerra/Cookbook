@@ -16,6 +16,10 @@ namespace Cookbook
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if(Request.Cookies.Get("active_user_uid") != null)
+            {
+                chkFavorites.Visible = true;
+            }
             if (!Page.IsPostBack) // when the page is initally loaded
             {
                 BindRecipeList();
@@ -25,72 +29,78 @@ namespace Cookbook
         private void BindRecipeList()
         {
 
-            txtRecipeName.Text = txtRecipeName.Text.Trim();
-            StringBuilder sb = new StringBuilder("SELECT recipe_name, denomination, total_time, vegetarian, gluten_free FROM recipes");
-            if (txtRecipeName.Text != "")
+            
+            StringBuilder sb = new StringBuilder("SELECT recipe_name, denomination, total_time, vegetarian, gluten_free FROM {0}recipes{1}");
+            int l = sb.Length;
+            
+            if(txtRecipeName.Text != "")
             {
-                sb.Append(" WHERE LOWER(recipe_name) LIKE LOWER('%");
-                string[] st = txtRecipeName.Text.Split();  
-                foreach (string s in st)
+                StringBuilder str = new StringBuilder((sb.Length == l ? " WHERE" : " AND" ) + " LOWER(recipe_name) LIKE LOWER(");
+                string[] st = txtRecipeName.Text.Split();
+                if (st.Length > 0)
                 {
-                    sb.Append(s+"%");
+                    str.Append("'%");
+                    foreach (string s in st)
+                    {
+                        str.Append(s + "%");
+                    }
+                    str.Append("'");
                 }
-                sb.Append("')");
-
-                if (dlRecipeType.Text != "")
+                else
                 {
-                    sb.Append(" AND denomination = @denom");
+                    str.Append("@recipe_name");
                 }
-                if (chkGlutenFree.Checked)
-                {
-                    sb.Append(" AND gluten_free = 1");
-                }
-                if (chkVegetarian.Checked)
-                {
-                    sb.Append(" AND vegetarian = 1");
-                }
-            }
-            else if (dlRecipeType.Text != "")
-            {
-                sb.Append(" WHERE denomination = @denom");
-                if (chkGlutenFree.Checked)
-                {
-                    sb.Append(" AND gluten_free = 1");
-                }
-                if (chkVegetarian.Checked)
-                {
-                    sb.Append(" AND vegetarian = 1");
-                }
-            }
-            else if (chkGlutenFree.Checked)
-            {
-                sb.Append(" WHERE gluten_free = 1");
-                if (chkVegetarian.Checked)
-                {
-                    sb.Append(" AND vegetarian = 1");
-                }
-            }
-            else if (chkVegetarian.Checked)
-            {
-                sb.Append(" WHERE vegetarian = 1");
+                str.Append(")");
+                sb.Append(str.ToString());
             }
 
-            SqlConnection conn = new SqlConnection();
+            if(dlRecipeType.Text != "")
+            {
+                sb.Append((sb.Length == l ? " WHERE" : " AND") + " denomination = @denom");
+            }
+
+            if (chkGlutenFree.Checked)
+            {
+                sb.Append((sb.Length == l ? " WHERE" : " AND") + " gluten_free = 1");
+            }
+
+            if (chkVegetarian.Checked)
+            {
+                sb.Append((sb.Length == l ? " WHERE" : " AND") + " vegetarian = 1");
+            }
+            SqlConnection conn;
+            SqlCommand cmd;
+            string fmt = "";
+            if (chkFavorites.Checked && Request.Cookies.Get("active_user_uid").Value != null)
+            {
+                fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
+                sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
+            }
+            
+            conn = new SqlConnection();
             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
             SqlDataAdapter sda = new SqlDataAdapter();
             DataTable dt = new DataTable();
 
-            SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+            cmd = new SqlCommand(String.Format(sb.ToString(), fmt == "" ? "" : "(", fmt == "" ? "" : fmt), conn);
+            if (Request.Cookies.Get("active_user_uid") != null) { 
+                try
+                {
+                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                } catch (Exception e) { }
+            }
+            try
+            {
+                cmd.Parameters.AddWithValue("@recipe_name", txtRecipeName.Text);
+            }
+            catch (Exception e) { }
 
             try
             {
                 cmd.Parameters.AddWithValue("@denom", dlRecipeType.Text);
             } catch (Exception e) { }
             
-
-
-
             sda.SelectCommand = cmd;
 
             sda.Fill(dt);
@@ -112,6 +122,7 @@ namespace Cookbook
             dlRecipeType.Text = "";
             chkGlutenFree.Checked = false;
             chkVegetarian.Checked = false;
+            chkFavorites.Checked = false;
             BindRecipeList();
         }
 
