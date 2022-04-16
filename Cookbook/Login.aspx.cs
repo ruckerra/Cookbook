@@ -29,7 +29,7 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                string q = "SELECT user_uid FROM user_details WHERE (username = @user AND password = @password) OR (email = @user AND password = @password)";
+                string q = "SELECT user_uid FROM user_details WHERE (LOWER(username) = LOWER(@user) AND password = @password) OR (LOWER(email) = LOWER(@user) AND password = @password)";
                 try
                 {
                     SqlCommand cmd = new SqlCommand(q, conn);

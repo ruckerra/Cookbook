@@ -87,7 +87,7 @@ namespace Cookbook
 
         protected bool[] Solicitation(SqlConnection conn, string solicit_username, string solicit_email)
         {
-            string q = "SELECT username, email FROM user_details WHERE username = @username OR email = @email";
+            string q = "SELECT username, email FROM user_details WHERE LOWER(username) = LOWER(@username) OR LOWER(email) = LOWER(@email)";
             SqlCommand cmd = new SqlCommand(q, conn);
             cmd.Parameters.AddWithValue("@username", solicit_username);
             cmd.Parameters.AddWithValue("@email", solicit_email);
@@ -106,8 +106,8 @@ namespace Cookbook
                     return new bool[] { false, false };
                 }
                 bool[] rtrn = new bool[] {
-                    sdr["username"].ToString() == solicit_username,
-                    sdr["email"].ToString() == solicit_email
+                    sdr["username"].ToString().ToLower() == solicit_username.ToLower(),
+                    sdr["email"].ToString().ToLower() == solicit_email.ToLower() ? true : sdr.Read()
                 };
                 conn.Close();
                 return rtrn;
