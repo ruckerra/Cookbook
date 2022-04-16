@@ -23,6 +23,7 @@ namespace Cookbook
             }
             
             string img_path = null;
+            bool admin = false;
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -37,6 +38,7 @@ namespace Cookbook
                         img_path = sdr["user_image_path"].ToString();
                     }
                 }
+                admin = sdr["verified"].ToString() == "True";
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<img class=\"float-left\" src ='/Content/Images/");
                 img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/"  + img_path;
@@ -56,14 +58,17 @@ namespace Cookbook
                     sb.Append("</h3>");
                 }
                 user_info.Text = sb.ToString();
+                conn.Close();
             }//using
             if (Request.Cookies.Get("active_user_uid") != null)
             {
                 btnSignOut.Visible = true;
+                btnOp.Visible = admin;
             }
             else
             {
                 btnSignOut.Visible = false;
+                btnOp.Visible = false;
             }
         }//page_load
 
@@ -121,6 +126,11 @@ namespace Cookbook
                 }
             }
             Response.Redirect("~/AccountPage.aspx");
+        }
+
+        protected void btnOp_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/ViewUsers.aspx");
         }
     }//class
 }//namespace
