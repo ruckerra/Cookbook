@@ -21,15 +21,16 @@ namespace Cookbook
                 {
                     conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                     //TODO: Get user_uid WHERE verified = 1
-                    string q = "SELECT user_uid FROM users WHERE verified = 1";
+                    string q = "SELECT verified FROM users WHERE user_uid = @uuid";
                     SqlCommand cmd = new SqlCommand(q,conn);
+                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                     conn.Open();
                     SqlDataReader sdr = cmd.ExecuteReader();
                     if (sdr.HasRows)
                     {
                         if (sdr.Read())
                         {
-                            if (Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString())
+                            if (sdr["verified"].ToString() == "True")
                             {
                                 if (!Page.IsPostBack)
                                 {
@@ -76,6 +77,23 @@ namespace Cookbook
                 if (Request.Cookies.Get("active_user_uid") == null || (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Request.Cookies.Get("active_user_uid").Value)
                 {
                     deleteButton.Enabled = false;
+                    
+                } else
+                {
+                    using (SqlConnection conn = new SqlConnection())
+                    {
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        string q = "SELECT verified FROM users WHERE user_uid = @uuid AND verified = 1";
+                        SqlCommand cmd = new SqlCommand(q, conn);
+                        cmd.Parameters.AddWithValue("@uuid", gvDisplayUsers.DataKeys[e.Row.RowIndex].Value.ToString());
+                        conn.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        if (sdr.HasRows)
+                        {
+                            deleteButton.Enabled = !sdr.Read();
+                        }
+                        conn.Close();
+                    }
                 }
                 deleteButton.CommandArgument = e.Row.Cells[0].Text;
             }
