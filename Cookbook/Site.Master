@@ -38,9 +38,6 @@
             </Scripts>
         </asp:ScriptManager>
         
-        <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="true"></asp:Label>
-        <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="true"></asp:Label>
-
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -59,12 +56,14 @@
                         <li><a runat="server" href="~/About">About</a></li>
                         <li><a runat="server" href="~/Contact">Contact</a></li>
                         <li><a runat="server" href="~/Login">Login</a></li>
-
-
                     </ul>
                 </div>
             </div>
         </div>
+
+        <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="true"></asp:Label>
+        <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="true"></asp:Label>
+
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>

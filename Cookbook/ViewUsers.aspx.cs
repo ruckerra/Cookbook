@@ -60,11 +60,12 @@ namespace Cookbook
             {
                 string uuid = e.CommandArgument.ToString();
                 DeleteUser(uuid);
-                if (SiteMaster.session_uid == uuid)
+                if (Request.Cookies.Get("active_user_uid") != null && Request.Cookies.Get("active_user_uid").Value == uuid)
                 {
-                    SiteMaster.session_uid = null;
-                    Response.Redirect("~/ViewUsers.aspx");
+                    Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
                 }
+                Response.Redirect("~/ViewUsers.aspx");
+                
             }
         }
 
@@ -85,7 +86,7 @@ namespace Cookbook
                 conn.Close();
                 BindRecipeList();
             }
-            
+
         }
     }
 }

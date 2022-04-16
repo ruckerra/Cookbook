@@ -29,33 +29,30 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                string qry = "SELECT user_uid FROM user_details WHERE {0} = {1} AND password = @password" ;
+                string q = "SELECT user_uid FROM user_details WHERE (username = @user AND password = @password) OR (email = @user AND password = @password)";
                 try
                 {
-                    SqlCommand cmd = new SqlCommand(String.Format(qry, "username", "@username"), conn);
-                    cmd.Parameters.AddWithValue("@username", TxtbxIdentifier.Text);
+                    SqlCommand cmd = new SqlCommand(q, conn);
+                    cmd.Parameters.AddWithValue("@user", TxtbxIdentifier.Text);
                     cmd.Parameters.AddWithValue("@password", TxtbxPassword.Text);
                     conn.Open();
-                    object objUsr = cmd.ExecuteScalar();
-                    conn.Close();
-                    if (objUsr == null)
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (!sdr.HasRows)
                     {
-                        cmd.Dispose();
-                        cmd = new SqlCommand(String.Format(qry, "email", "@email"), conn);
-                        cmd.Parameters.AddWithValue("@email", TxtbxIdentifier.Text.ToLower());
-                        cmd.Parameters.AddWithValue("@password", TxtbxPassword.Text);
-                        conn.Open();
-                        objUsr = cmd.ExecuteScalar();
-                        conn.Close();
-                    }
-                    if (objUsr != null)
-                    {
-                        #region Temp_Cookie
-                        SiteMaster.session_uid = objUsr.ToString();
-                        #endregion
-                        Response.Redirect("~/LandingPage.aspx", true);
-                    } else {
                         reject.Visible = true;
+                        conn.Close();
+                        return;
+                    }
+                    else
+                    {
+                        sdr.Read();
+                        if(Request.Cookies.Get("active_user_uid") == null || !(Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString()))
+                        {
+                            HttpCookie c = new HttpCookie("active_user_uid");
+                            c.Value = sdr["user_uid"].ToString();
+                            Response.Cookies.Add(c);
+                        }
+                        conn.Close();
                     }
                 }
                 catch (Exception ex)
@@ -64,6 +61,7 @@ namespace Cookbook
                     throw ex;
                 }
             }
+            Response.Redirect("~/LandingPage.aspx", true);
             //Manual refresh to update master user_uid
         }//submit
     }//class

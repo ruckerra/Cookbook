@@ -4,26 +4,45 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Data;
+using System.Web.Configuration;
 
 namespace Cookbook
 {
+
     public partial class SiteMaster : MasterPage
     {
-        #region Temp_Cookie
-        public static string session_uid = null;
-        #endregion
         protected void Page_Load(object sender, EventArgs e)
         {
-            #region Temp_Cookie
-            if (SiteMaster.session_uid != null)
+            HttpCookie c = Request.Cookies.Get("active_user_uid");
+            if (c != null)
             {
-                active_user_uid.Text = SiteMaster.session_uid;
+                using (SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                    string q = "SELECT user_uid FROM users WHERE user_uid = @uuid";
+                    SqlCommand cmd = new SqlCommand(q, conn);
+                    cmd.Parameters.AddWithValue("@uuid", c.Value);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (!sdr.HasRows)
+                    {
+                        Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
+                        active_user_uid.Text = "[NULL]";
+                    } else
+                    {
+                        active_user_uid.Text = c.Value;
+                    }
+                    conn.Close();
+                }
+                
             }
             else
             {
                 active_user_uid.Text = "[NULL]";
             }
-            #endregion
         }
+        
     }
 }
