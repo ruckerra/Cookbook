@@ -36,7 +36,7 @@
         </div>
     </asp:Panel>
     <asp:Panel ID="pnlRecipeList" runat="server">
-        <asp:GridView ID="gvRecipeList" runat="server" CssClass="table table-striped" AutoGenerateColumns="False">
+        <asp:GridView ID="gvRecipeList" runat="server" CssClass="table table-striped" AutoGenerateColumns="False" OnRowCommand="gvRecipeList_RowCommand" OnRowDataBound="gvRecipeList_RowDataBound" DataKeyNames="recipe_name">
             <Columns>
                 <asp:BoundField DataField="recipe_name" HeaderText="Recipe Name" />
                 <asp:BoundField DataField="denomination" HeaderText="Type" />
@@ -45,7 +45,7 @@
                 <asp:BoundField DataField="gluten_free" HeaderText="Gluten Free" />
                 <asp:TemplateField HeaderText="Save Recipe">
                     <ItemTemplate>
-                        <asp:Button ID="btnFavRecipe" runat="server" Text="Favorite" CssClass="btn btn-primary"/>
+                        <asp:Button ID="btnFavRecipe" runat="server" Text="Favorite" CssClass="btn btn-primary" CommandName="FavRecipe"/>
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
