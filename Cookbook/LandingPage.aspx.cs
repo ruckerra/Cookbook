@@ -29,10 +29,17 @@ namespace Cookbook
             StringBuilder sb = new StringBuilder("SELECT recipe_name, denomination, total_time, vegetarian, gluten_free FROM recipes");
             if (txtRecipeName.Text != "")
             {
-                sb.Append(" WHERE recipe_name = '" + txtRecipeName.Text + "'");
+                sb.Append(" WHERE LOWER(recipe_name) LIKE LOWER('%");
+                string[] st = txtRecipeName.Text.Split();  
+                foreach (string s in st)
+                {
+                    sb.Append(s+"%");
+                }
+                sb.Append("')");
+
                 if (dlRecipeType.Text != "")
                 {
-                    sb.Append(" AND denomination = '" + dlRecipeType.Text + "'");
+                    sb.Append(" AND denomination = @denom");
                 }
                 if (chkGlutenFree.Checked)
                 {
@@ -45,7 +52,7 @@ namespace Cookbook
             }
             else if (dlRecipeType.Text != "")
             {
-                sb.Append(" WHERE denomination = '" + dlRecipeType.Text + "'");
+                sb.Append(" WHERE denomination = @denom");
                 if (chkGlutenFree.Checked)
                 {
                     sb.Append(" AND gluten_free = 1");
@@ -74,9 +81,15 @@ namespace Cookbook
             SqlDataAdapter sda = new SqlDataAdapter();
             DataTable dt = new DataTable();
 
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = sb.ToString();
-            cmd.Connection = conn;
+            SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+
+            try
+            {
+                cmd.Parameters.AddWithValue("@denom", dlRecipeType.Text);
+            } catch (Exception e) { }
+            
+
+
 
             sda.SelectCommand = cmd;
 
