@@ -14,10 +14,35 @@ namespace Cookbook
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
+
+            if (Request.Cookies.Get("active_user_uid") != null)
             {
-                BindRecipeList();
+                using(SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                    //TODO: Get user_uid WHERE verified = 1
+                    string q = "SELECT user_uid FROM users WHERE verified = 1";
+                    SqlCommand cmd = new SqlCommand(q,conn);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+                        if (sdr.Read())
+                        {
+                            if (Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString())
+                            {
+                                if (!Page.IsPostBack)
+                                {
+                                    BindRecipeList();
+                                }
+                                return;
+                            }
+                        }
+                    }
+                    conn.Close();
+                }
             }
+            Response.Redirect("~/LandingPage.aspx");
         }
         private void BindRecipeList()
         {
