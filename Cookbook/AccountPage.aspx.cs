@@ -38,6 +38,10 @@ namespace Cookbook
                         img_path = sdr["user_image_path"].ToString();
                     }
                 }
+                else
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
                 admin = sdr["admin"].ToString() == "True";
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<img class=\"float-left\" src ='/Content/Images/");
