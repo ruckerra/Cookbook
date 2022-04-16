@@ -20,8 +20,7 @@ namespace Cookbook
                 using(SqlConnection conn = new SqlConnection())
                 {
                     conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    //TODO: Get user_uid WHERE verified = 1
-                    string q = "SELECT verified FROM users WHERE user_uid = @uuid";
+                    string q = "SELECT admin FROM users WHERE user_uid = @uuid";
                     SqlCommand cmd = new SqlCommand(q,conn);
                     cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                     conn.Open();
@@ -30,7 +29,7 @@ namespace Cookbook
                     {
                         if (sdr.Read())
                         {
-                            if (sdr["verified"].ToString() == "True")
+                            if (sdr["admin"].ToString() == "True")
                             {
                                 if (!Page.IsPostBack)
                                 {
@@ -74,28 +73,77 @@ namespace Cookbook
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Button deleteButton = e.Row.FindControl("btnDelete") as Button;
+                Button modUser = e.Row.FindControl("btnMod") as Button;
+                
+                //Check if cookies are null, and disable delete button for the active user themselves
                 if (Request.Cookies.Get("active_user_uid") == null || (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Request.Cookies.Get("active_user_uid").Value)
                 {
                     deleteButton.Enabled = false;
-                    
+                    modUser.Enabled = false;
+                    modUser.Visible = false;
                 } else
                 {
+                    //Disable delete button assigned to mods
                     using (SqlConnection conn = new SqlConnection())
                     {
                         conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                        string q = "SELECT verified FROM users WHERE user_uid = @uuid AND verified = 1";
+                        string q = "SELECT admin, owner FROM users WHERE user_uid = @uuid AND admin = 1";
                         SqlCommand cmd = new SqlCommand(q, conn);
                         cmd.Parameters.AddWithValue("@uuid", gvDisplayUsers.DataKeys[e.Row.RowIndex].Value.ToString());
                         conn.Open();
                         SqlDataReader sdr = cmd.ExecuteReader();
                         if (sdr.HasRows)
                         {
-                            deleteButton.Enabled = !sdr.Read();
+                            sdr.Read();
+                            if (sdr["admin"].ToString() == "True")
+                            {
+                                deleteButton.Enabled = false;
+                            }
                         }
                         conn.Close();
                     }
+
+                    //Check if user is owner, if so give ability to mod users and ability to delete even mods.
+                    using (SqlConnection conn = new SqlConnection())
+                    {
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        string is_admin = "SELECT user_uid FROM users WHERE owner = 1";
+                        SqlCommand cmd = new SqlCommand(is_admin, conn);
+                        conn.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        if (sdr.HasRows)
+                        {
+                            if (sdr.Read())
+                            {
+                                if (sdr["user_uid"].ToString() == Request.Cookies.Get("active_user_uid").Value)
+                                {
+                                    modUser.Visible = true;
+                                    deleteButton.Enabled = true;
+                                }
+                            }
+                        } else
+                        {
+                            modUser.Visible = false;
+                        }
+                        conn.Close();
+                    }
+
+                    //Change text if user is already mod
+                    using(SqlConnection conn = new SqlConnection())
+                    {
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid",conn);
+                        cmd.Parameters.AddWithValue("@uuid", gvDisplayUsers.DataKeys[e.Row.RowIndex].Value.ToString());
+                        conn.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        if (sdr.HasRows)
+                        {
+                            modUser.Text = sdr.Read() && sdr["admin"].ToString() == "True" ? "Remove Mod" : modUser.Text;
+                        }
+                    }
                 }
                 deleteButton.CommandArgument = e.Row.Cells[0].Text;
+                modUser.CommandArgument = e.Row.Cells[0].Text;
             }
         }
 
@@ -104,11 +152,39 @@ namespace Cookbook
             if (e.CommandName == "ReqUserDel")
             {
                 string uuid = e.CommandArgument.ToString();
-                if (Request.Cookies.Get("active_user_uid") == null || !(Request.Cookies.Get("active_user_uid").Value == uuid))
+                if (Request.Cookies.Get("active_user_uid") != null && !(Request.Cookies.Get("active_user_uid").Value == uuid))
                 {
                     DeleteUser(uuid);
                 }
                 Response.Redirect("~/ViewUsers.aspx");
+            }
+            if(e.CommandName == "GiveAdmin")
+            {
+                string uuid = e.CommandArgument.ToString();
+                string owner_uid = null;
+                //Double check if active user is owner, and prevent owner from unmodding themself
+                using (SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                    SqlCommand cmd = new SqlCommand("SELECT user_uid FROM users WHERE owner = 1", conn);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+                        if (sdr.Read())
+                        {
+                            owner_uid = sdr["user_uid"].ToString();
+                        }
+                    }
+                    conn.Close();
+                }
+                if (Request.Cookies.Get("active_user_uid") != null &&
+                    owner_uid != null &&
+                    Request.Cookies.Get("active_user_uid").Value == owner_uid &&
+                    Request.Cookies.Get("active_user_uid").Value != uuid)
+                {
+                    ModUser(uuid);
+                }
             }
         }
 
@@ -122,7 +198,6 @@ namespace Cookbook
                 cmd1.Parameters.AddWithValue("@uuid", uuid);
                 cmd2.Parameters.AddWithValue("@uuid", uuid);
 
-
                 conn.Open();
                 cmd1.ExecuteNonQuery();
                 cmd2.ExecuteNonQuery();
@@ -131,5 +206,46 @@ namespace Cookbook
             }
 
         }
+
+        private void ModUser(string uuid)
+        {
+            //Give/remove admin
+            using(SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                string q = "SELECT admin FROM users WHERE user_uid = @uuid";
+                string updt = "UPDATE users SET admin = {0} WHERE user_uid = @uuid";
+                SqlCommand cmd = new SqlCommand(q, conn);
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    if (sdr.Read())
+                    {
+                        updt = String.Format(updt, sdr["admin"].ToString() == "True" ? "0" : "1");
+                    }
+                    else
+                    {
+                        conn.Close();
+                        return;
+                    }
+                }
+                else
+                {
+                    conn.Close();
+                    return;
+                }
+                conn.Close();
+                cmd.Dispose();
+                cmd = new SqlCommand(updt,conn);
+                cmd.Parameters.AddWithValue("@uuid", uuid);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            BindRecipeList();
+        }
+
     }
 }
