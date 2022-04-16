@@ -48,7 +48,7 @@ namespace Cookbook
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Button deleteButton = e.Row.FindControl("btnDelete") as Button;
-                if (Request.Cookies.Get("active_user_uid") != null && (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Request.Cookies.Get("active_user_uid").Value)
+                if (Request.Cookies.Get("active_user_uid") == null || (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Request.Cookies.Get("active_user_uid").Value)
                 {
                     deleteButton.Enabled = false;
                 }
