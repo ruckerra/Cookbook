@@ -13,10 +13,20 @@ namespace Cookbook
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Request.QueryString["recipe_id"] == null)
+            {
+                if(Request.Cookies.Get("last_viewed_recipe") != null)
+                {
+                    Response.Redirect("~/ViewRecipe?recipe_id=" + Request.Cookies.Get("last_viewed_recipe").Value);
+                }
+            }
             if (!Page.IsPostBack)
             {
                 if (Request.QueryString["recipe_id"] != null)
                 {
+                    HttpCookie c = new HttpCookie("last_viewed_recipe");
+                    c.Value = Request.QueryString["recipe_id"].ToString();
+                    Response.Cookies.Add(c);
                     int recipe_id = int.Parse(Request.QueryString["recipe_id"]);
 
                     using (SqlConnection conn = new SqlConnection())
@@ -56,7 +66,9 @@ namespace Cookbook
                             lblNotes.Text += sdr["notes"].ToString();
                             lblIngredients.Text += sdr["ingredients"].ToString();
                             lblDirections.Text += sdr["directions"].ToString();
-                            imgRecipe.ImageUrl = "/Content/Catalog/Images/" + sdr["recipe_image_path"].ToString();
+                            string img_path = sdr["recipe_image_path"].ToString();
+                            img_path = ("/Content/Images/" + (img_path == "" ? "Default/" + "recipe.png" : "Recipes/" + img_path));
+                            imgRecipe.ImageUrl = img_path;
                         }
                     }
                 }

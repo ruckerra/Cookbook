@@ -2,7 +2,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
         <div class="col-sm-3">
-            <asp:Image ID="imgRecipe" runat="server" />
+            <asp:Image ID="imgRecipe" runat="server" style="vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;margin-left:-25%"/>
         </div>
         <div class="col-sm-5">
             <asp:Label ID="lblRecipeName" runat="server">Recipe Name: </asp:Label><br />
