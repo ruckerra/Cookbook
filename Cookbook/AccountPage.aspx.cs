@@ -21,62 +21,61 @@ namespace Cookbook
             {
                 Response.Redirect("~/Login.aspx");
             }
-            if (Page.IsValid)
+            
+            string img_path = null;
+            bool admin = false;
+            using (SqlConnection conn = new SqlConnection())
             {
-                string img_path = null;
-                bool admin = false;
-                using (SqlConnection conn = new SqlConnection())
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                string q = "SELECT * FROM users INNER JOIN user_details ON users.user_uid = user_details.user_uid WHERE users.user_uid = @uuid";
+                SqlCommand cmd = new SqlCommand(q, conn);
+                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
                 {
-                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    string q = "SELECT * FROM users INNER JOIN user_details ON users.user_uid = user_details.user_uid WHERE users.user_uid = @uuid";
-                    SqlCommand cmd = new SqlCommand(q, conn);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                    conn.Open();
-                    SqlDataReader sdr = cmd.ExecuteReader();
-                    if (sdr.HasRows)
+                    if (sdr.Read())
                     {
-                        if (sdr.Read())
-                        {
-                            img_path = sdr["user_image_path"].ToString();
-                        }
+                        img_path = sdr["user_image_path"].ToString();
                     }
-                    else
-                    {
-                        Response.Redirect("~/Login.aspx");
-                    }
-                    admin = sdr["admin"].ToString() == "True";
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("<img class=\"float-left\" src ='/Content/Images/");
-                    img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/" + img_path;
-                    sb.Append(img_path);
-                    sb.Append("' style=\"vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;margin-left:-25%\">");
-                    user_img.Text = sb.ToString();
-
-                    sb.Clear();
-
-                    sb.Append("<h1>");
-                    sb.Append(sdr["username"]);
-                    sb.Append("</h1>");
-                    if (Request.Cookies.Get("active_user_uid") != null && Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString())
-                    {
-                        sb.Append("<h3>");
-                        sb.Append(sdr["email"].ToString());
-                        sb.Append("</h3>");
-                    }
-                    user_info.Text = sb.ToString();
-                    conn.Close();
-                }//using
-                if (Request.Cookies.Get("active_user_uid") != null)
-                {
-                    btnSignOut.Visible = true;
-                    btnOp.Visible = admin;
                 }
                 else
                 {
-                    btnSignOut.Visible = false;
-                    btnOp.Visible = false;
+                    Response.Redirect("~/Login.aspx");
                 }
+                admin = sdr["admin"].ToString() == "True";
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<img class=\"float-left\" src ='/Content/Images/");
+                img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/" + img_path;
+                sb.Append(img_path);
+                sb.Append("' style=\"vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;margin-left:-25%\">");
+                user_img.Text = sb.ToString();
+
+                sb.Clear();
+
+                sb.Append("<h1>");
+                sb.Append(sdr["username"]);
+                sb.Append("</h1>");
+                if (Request.Cookies.Get("active_user_uid") != null && Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString())
+                {
+                    sb.Append("<h3>");
+                    sb.Append(sdr["email"].ToString());
+                    sb.Append("</h3>");
+                }
+                user_info.Text = sb.ToString();
+                    conn.Close();
+            }//using
+            if (Request.Cookies.Get("active_user_uid") != null)
+            {
+                btnSignOut.Visible = true;
+                btnOp.Visible = admin;
             }
+            else
+            {
+                btnSignOut.Visible = false;
+                btnOp.Visible = false;
+            }
+            
         }//page_load
 
         protected void btnSignOut_Click(object sender, EventArgs e)

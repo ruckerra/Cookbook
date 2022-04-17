@@ -17,32 +17,29 @@ namespace Cookbook
 
             if (Request.Cookies.Get("active_user_uid") != null)
             {
-                if (Page.IsValid)
-                { 
-                    using(SqlConnection conn = new SqlConnection())
+                using(SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                    string q = "SELECT admin FROM users WHERE user_uid = @uuid";
+                    SqlCommand cmd = new SqlCommand(q,conn);
+                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
                     {
-                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                        string q = "SELECT admin FROM users WHERE user_uid = @uuid";
-                        SqlCommand cmd = new SqlCommand(q,conn);
-                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                        conn.Open();
-                        SqlDataReader sdr = cmd.ExecuteReader();
-                        if (sdr.HasRows)
+                        if (sdr.Read())
                         {
-                            if (sdr.Read())
+                            if (sdr["admin"].ToString() == "True")
                             {
-                                if (sdr["admin"].ToString() == "True")
+                                if (!Page.IsPostBack)
                                 {
-                                    if (!Page.IsPostBack)
-                                    {
-                                        BindRecipeList();
-                                    }
-                                    return;
+                                    BindRecipeList();
                                 }
+                                return;
                             }
                         }
-                        conn.Close();
                     }
+                    conn.Close();
                 }
             }
             Response.Redirect("~/LandingPage.aspx");
