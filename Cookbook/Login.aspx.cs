@@ -15,7 +15,10 @@ namespace Cookbook
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if(Request.Cookies.Get("active_user_uid") != null)
+            {
+                Response.Redirect("~/AccountPage.aspx");
+            }
         }
 
         protected void BtnRegister_Click(object sender, EventArgs e)
