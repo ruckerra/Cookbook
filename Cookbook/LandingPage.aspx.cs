@@ -71,12 +71,13 @@ namespace Cookbook
             SqlConnection conn;
             SqlCommand cmd;
             string fmt = "";
-            if (chkFavorites.Checked && Request.Cookies.Get("active_user_uid").Value != null)
-            {
-                fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
-                sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
+            if (Page.IsValid) { 
+                if (chkFavorites.Checked && Request.Cookies.Get("active_user_uid").Value != null)
+                {
+                    fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
+                    sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
+                }
             }
-            
             conn = new SqlConnection();
             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
@@ -137,20 +138,22 @@ namespace Cookbook
                     fav.Enabled = false;
                 } else
                 {
-                    using (SqlConnection conn = new SqlConnection())
-                    {
-                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                        string q = "SELECT *  FROM users_favorites WHERE user_uid = @uuid AND recipe_id = (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name)";
-                        SqlCommand cmd = new SqlCommand(q, conn);
-                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                        cmd.Parameters.AddWithValue("@recipe_name", (gvRecipeList.DataKeys[e.Row.RowIndex].Value).ToString());
-                        conn.Open();
-                        SqlDataReader sdr = cmd.ExecuteReader();
-                        if (sdr.HasRows)
+                    if (Page.IsValid) { 
+                        using (SqlConnection conn = new SqlConnection())
                         {
-                            fav.Text = "Unfavorite";
+                            conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                            string q = "SELECT *  FROM users_favorites WHERE user_uid = @uuid AND recipe_id = (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name)";
+                            SqlCommand cmd = new SqlCommand(q, conn);
+                            cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                            cmd.Parameters.AddWithValue("@recipe_name", (gvRecipeList.DataKeys[e.Row.RowIndex].Value).ToString());
+                            conn.Open();
+                            SqlDataReader sdr = cmd.ExecuteReader();
+                            if (sdr.HasRows)
+                            {
+                                fav.Text = "Unfavorite";
+                            }
+                            conn.Close();
                         }
-                        conn.Close();
                     }
                 }
                 e.Row.Cells[3].Text = e.Row.Cells[3].Text == "1" ? "True" : "False";
@@ -174,47 +177,49 @@ namespace Cookbook
 
         protected void FavoriteRecipe(string recipe_name)
         {
-            using (SqlConnection conn = new SqlConnection())
-            {
-                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand("SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name", conn);
-                cmd.Parameters.AddWithValue("@recipe_name", recipe_name);
-                string recipe_id = null;
-                conn.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-                sdr.Read();
-                recipe_id = sdr["recipe_id"].ToString();
-                conn.Close();
-                cmd.Dispose();
-
-                cmd = new SqlCommand("SELECT * FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
-                cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                conn.Open();
-                sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+            if (Page.IsValid) { 
+                using (SqlConnection conn = new SqlConnection())
                 {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                    SqlCommand cmd = new SqlCommand("SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name", conn);
+                    cmd.Parameters.AddWithValue("@recipe_name", recipe_name);
+                    string recipe_id = null;
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    sdr.Read();
+                    recipe_id = sdr["recipe_id"].ToString();
                     conn.Close();
+                    cmd.Dispose();
 
-                    cmd = new SqlCommand("DELETE FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
+                    cmd = new SqlCommand("SELECT * FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
                     cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
                     cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                     conn.Open();
+                    sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+                        conn.Close();
+
+                        cmd = new SqlCommand("DELETE FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
+                        cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
+                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                        BindRecipeList();
+                        return;
+                    }
+                    conn.Close();
+                    cmd.Dispose();
+
+                    cmd = new SqlCommand("INSERT INTO users_favorites(user_uid, recipe_id) VALUES(@uuid, @recipe_id)", conn);
+                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
+                    conn.Open();
                     cmd.ExecuteNonQuery();
                     conn.Close();
-                    BindRecipeList();
-                    return;
+
                 }
-                conn.Close();
-                cmd.Dispose();
-
-                cmd = new SqlCommand("INSERT INTO users_favorites(user_uid, recipe_id) VALUES(@uuid, @recipe_id)", conn);
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-
             }
             BindRecipeList();
         }

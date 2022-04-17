@@ -17,29 +17,32 @@ namespace Cookbook
 
             if (Request.Cookies.Get("active_user_uid") != null)
             {
-                using(SqlConnection conn = new SqlConnection())
-                {
-                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    string q = "SELECT admin FROM users WHERE user_uid = @uuid";
-                    SqlCommand cmd = new SqlCommand(q,conn);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                    conn.Open();
-                    SqlDataReader sdr = cmd.ExecuteReader();
-                    if (sdr.HasRows)
+                if (Page.IsValid)
+                { 
+                    using(SqlConnection conn = new SqlConnection())
                     {
-                        if (sdr.Read())
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        string q = "SELECT admin FROM users WHERE user_uid = @uuid";
+                        SqlCommand cmd = new SqlCommand(q,conn);
+                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                        conn.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        if (sdr.HasRows)
                         {
-                            if (sdr["admin"].ToString() == "True")
+                            if (sdr.Read())
                             {
-                                if (!Page.IsPostBack)
+                                if (sdr["admin"].ToString() == "True")
                                 {
-                                    BindRecipeList();
+                                    if (!Page.IsPostBack)
+                                    {
+                                        BindRecipeList();
+                                    }
+                                    return;
                                 }
-                                return;
                             }
                         }
+                        conn.Close();
                     }
-                    conn.Close();
                 }
             }
             Response.Redirect("~/LandingPage.aspx");
@@ -63,7 +66,6 @@ namespace Cookbook
 
                 gvDisplayUsers.DataSource = dt;
                 gvDisplayUsers.DataBind();
-
 
             }
         }
