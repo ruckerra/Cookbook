@@ -5,10 +5,10 @@
         <div class ="row">
             <div class="col-md-2">
                 <asp:Label for="txtRecipeName" runat="server">Recipe Name: </asp:Label>
-                <asp:TextBox ID="txtRecipeName" runat="server"></asp:TextBox>
+                <asp:TextBox ID="txtRecipeName" runat="server" CssClass="form-control"></asp:TextBox>
                 &nbsp; 
                 <asp:Label for="dlRecipeType" runat="server">Recipe Type:</asp:Label> 
-                <asp:DropDownList ID="dlRecipeType" runat="server">
+                <asp:DropDownList ID="dlRecipeType" runat="server" CssClass="form-select">
                     <asp:ListItem Selected="True" Value=""></asp:ListItem>
                     <asp:ListItem>Breakfast</asp:ListItem>
                     <asp:ListItem>Brunch</asp:ListItem>
@@ -22,15 +22,15 @@
                 <asp:SqlDataSource ID="SqlRecipeTypeConnection" runat="server" ConnectionString="<%$ ConnectionStrings:CookbookConnectionString %>" SelectCommand="SELECT DISTINCT [denomination] FROM [recipes]"></asp:SqlDataSource>
             </div>
             <div class="col-md-10">
-            <asp:CheckBox ID="chkVegetarian" runat="server" Text="Vegetarian" />
+            <asp:CheckBox ID="chkVegetarian" runat="server" Text="Vegetarian" CssClass="form-select-input" />
             <br />
-            <asp:CheckBox ID="chkGlutenFree" runat="server" Text="Gluten Free" />
+            <asp:CheckBox ID="chkGlutenFree" runat="server" Text="Gluten Free" CssClass="form-select-input"/>
             <br />
-            <asp:CheckBox ID="chkFavorites" runat="server" Text="Your Favorites" Visible="false"/>
+            <asp:CheckBox ID="chkFavorites" runat="server" Text="Your Favorites" Visible="false" CssClass="form-select-input"/>
             </div>     
         </div>
         <br />
-        <div class="row">
+        <div class="row" style="margin-bottom:1rem">
             <div class="col-md-12">
                 <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary" Height="34px" Text="Search" Width="81px" OnClick="btnSearch_Click" />
                 <asp:Button ID="btnCancelSearch" runat="server" CssClass="btn btn-Primary" OnClick="btnCancelSearch_Click" Text="Cancel" />
