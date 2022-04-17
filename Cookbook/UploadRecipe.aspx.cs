@@ -14,6 +14,11 @@ namespace Cookbook
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Request.Cookies.Get("active_user_uid") == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
+            lblInvalid.Visible = false;
             if (!Page.IsPostBack)
             {
                 BindRecipeList();
@@ -48,10 +53,37 @@ namespace Cookbook
         {
             if (Page.IsValid)
             {
+                string rn = txtRecipeName.Text.Trim();
                 using (SqlConnection conn = new SqlConnection())
                 {
                     conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE recipe_name = @recipe_name",conn);
+                    cmd.Parameters.AddWithValue("@recipe_name",rn);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+
+                        if (sdr.Read())
+                        { 
+                            lblInvalid.Visible = true;
+                            conn.Close();
+                            return;
+                        }
+                        else
+                        {
+                            lblInvalid.Visible = false;
+                        }
+                    }
+                    else
+                    {
+                        lblInvalid.Visible = false;
+                    }
+                }
+
+                using (SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
                     int gf = 0;
                     int vegetarian = 0;
@@ -65,16 +97,32 @@ namespace Cookbook
                         vegetarian = 1;
                     }
 
-                    cmd.Connection = conn;
+                    SqlCommand cmd = new SqlCommand("INSERT INTO recipes VALUES(@recipe_name, @prep_time, @total_time, @vegetarian, @gluten_free, @denomination, @notes, @img_path, @ingredients, @directions)",conn);
+                    cmd.Parameters.AddWithValue("@recipe_name", rn);
+                    cmd.Parameters.AddWithValue("@prep_time", txtPrepTime.Text);
+                    cmd.Parameters.AddWithValue("@total_time", txtTotalTime.Text);
+                    cmd.Parameters.AddWithValue("@vegetarian", vegetarian);
+                    cmd.Parameters.AddWithValue("@gluten_free", gf);
+                    cmd.Parameters.AddWithValue("@denomination", ddType.SelectedValue.ToString());
+                    cmd.Parameters.AddWithValue("@notes", txtNotes.Text);
+                    cmd.Parameters.AddWithValue("@img_path", "");
+                    cmd.Parameters.AddWithValue("@ingredients", txtIngredients.Text);
+                    cmd.Parameters.AddWithValue("@directions", txtDirections.Text);
+
                     conn.Open();
-
-                    cmd.CommandText = "INSERT INTO recipes VALUES('" + txtRecipeName.Text + "', '" + txtPrepTime.Text + "', '" + txtTotalTime.Text +"', " + vegetarian +", " + gf + ", '" + ddType.SelectedValue.ToString() + "', '" + txtNotes.Text + "', '', '" + txtIngredients.Text + "', '" + txtDirections.Text + "')";
-
                     cmd.ExecuteNonQuery();
+                    conn.Close();
 
-                    lblFeedback.Text = "The recipe " + txtRecipeName.Text + " was added.";
+                    lblFeedback.Text = "The recipe " + rn + " was added.";
                     lblFeedback.Visible = true;
+                    
+                    cmd.Dispose();
 
+                    cmd = new SqlCommand("INSERT INTO user_recipes(username, recipe_id) VALUES((SELECT username FROM users WHERE user_uid = @uuid), (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name))",conn);
+                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    cmd.Parameters.AddWithValue("@recipe_name", rn);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
                     conn.Close();
                 }
 
@@ -125,13 +173,13 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand();
-
-                cmd.CommandText = "DELETE FROM recipes WHERE recipe_id = " + recipeid;
-                cmd.Connection = conn;
+                SqlCommand cmd = new SqlCommand("DELETE FROM recipes WHERE recipe_id = @recipe_id", conn);
+                SqlCommand cmd2 = new SqlCommand("DELETE FROM user_recipes WHERE recipe_id = @recipe_id", conn);
+                cmd.Parameters.AddWithValue("@recipe_id",recipeid);
+                cmd2.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
+                cmd2.ExecuteNonQuery();
                 cmd.ExecuteNonQuery();
-                
                 BindRecipeList();
             }
         }

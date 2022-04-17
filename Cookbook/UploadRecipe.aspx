@@ -4,11 +4,12 @@
     <asp:Panel ID="pnlUploadRecipe" runat="server">
         <div class="row">
             <div class="col-md-2">
-                <label for="txtRecipeName">Recipe Name: </label>
+                <label for="txtRecipeName" style="display:inline">Recipe Name: </label>
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtRecipeName" runat="server"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvRecipeName" runat="server" ErrorMessage="Required" ControlToValidate="txtRecipeName" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
+                <asp:Label ID="lblInvalid" runat="server" Text=" This recipe name is already taken." ForeColor="Red" Visible="false"></asp:Label>
             </div>
         </div>
         <div class="row">
