@@ -81,6 +81,7 @@ namespace Cookbook
             if (Request.Cookies.Get("active_user_uid") != null)
             {
                 Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Get("last_viewed_recipe").Expires = DateTime.Now.AddDays(-1);
                 btnSignOut.Visible = false;
                 Response.Redirect("~/Login.aspx");
             }
