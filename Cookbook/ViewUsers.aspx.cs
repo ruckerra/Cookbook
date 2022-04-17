@@ -192,14 +192,19 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd1 = new SqlCommand("DELETE FROM user_details WHERE user_uid = @uuid", conn);
-                SqlCommand cmd2 = new SqlCommand("DELETE FROM users WHERE user_uid = @uuid", conn);
+                SqlCommand cmd1 = new SqlCommand("DELETE FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)", conn);
+                SqlCommand cmd2 = new SqlCommand("DELETE FROM users_favorites WHERE user_uid = @uuid", conn);
+                SqlCommand cmd3 = new SqlCommand("DELETE FROM user_details WHERE user_uid = @uuid", conn);
+                SqlCommand cmd4 = new SqlCommand("DELETE FROM users WHERE user_uid = @uuid", conn);
                 cmd1.Parameters.AddWithValue("@uuid", uuid);
                 cmd2.Parameters.AddWithValue("@uuid", uuid);
-
+                cmd3.Parameters.AddWithValue("@uuid", uuid);
+                cmd4.Parameters.AddWithValue("@uuid", uuid);
                 conn.Open();
                 cmd1.ExecuteNonQuery();
                 cmd2.ExecuteNonQuery();
+                cmd3.ExecuteNonQuery();
+                cmd4.ExecuteNonQuery();
                 conn.Close();
                 BindRecipeList();
             }
