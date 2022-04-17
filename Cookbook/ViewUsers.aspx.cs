@@ -138,7 +138,7 @@ namespace Cookbook
                         SqlDataReader sdr = cmd.ExecuteReader();
                         if (sdr.HasRows)
                         {
-                            modUser.Text = sdr.Read() && sdr["admin"].ToString() == "True" ? "Remove Mod" : modUser.Text;
+                            modUser.Text = sdr.Read() && sdr["admin"].ToString() == "True" ? "Remove Admin" : modUser.Text;
                         }
                     }
                 }

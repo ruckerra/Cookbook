@@ -13,12 +13,12 @@
                         <asp:BoundField DataField="date_reg" HeaderText="Date Registered" />
                         <asp:TemplateField HeaderText="" >
                             <ItemTemplate>
-                                <asp:Button ID="btnMod" runat="server" CssClass="btn btn-info" Text="Give Mod" OnClientClick="return confirm('Are you sure you want to mod this user?');" CommandName="GiveAdmin" Visible="false"/>
+                                <asp:Button ID="btnMod" runat="server" CssClass="btn btn-info" Text="Give Admin" OnClientClick="return confirm('Are you sure you want to mod this user?');" CommandName="GiveAdmin" Visible="false"/>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Delete User">
                             <ItemTemplate>
-                                <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete" OnClientClick="return confirm('Are you sure you want to delete this user?');" CommandName="ReqUserDel" />
+                                <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete User" OnClientClick="return confirm('Are you sure you want to delete this user?');" CommandName="ReqUserDel" />
                             </ItemTemplate>
                         </asp:TemplateField>
 
