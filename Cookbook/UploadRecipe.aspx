@@ -94,14 +94,11 @@
         </div>
         <div class="row">
             <div class ="col-md-6">
-                <asp:Button ID="btnSave" runat="server" Text="Upload" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
+                <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
                 <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" OnClick="btnUpdate_Click" />
                 <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" CssClass="btn btn-secondary" OnClick="btnCancel_Click"/>
                 <asp:Label ID="lblFeedback" runat="server" Text="" Visible ="False"></asp:Label>
                 <asp:Label ID="lblRecipeId" runat="server" Text="Label" Visible ="false"></asp:Label>
-                <div>
-                    <asp:Label ID="lblHeader" runat="server" Text="" style="display:block"></asp:Label>
-                </div>
             </div>
         </div>
 
