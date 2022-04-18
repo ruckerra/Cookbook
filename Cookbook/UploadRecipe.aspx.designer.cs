@@ -69,6 +69,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPrepTime;
 
         /// <summary>
+        /// rvPrepTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvPrepTime;
+
+        /// <summary>
         /// txtTotalTime control.
         /// </summary>
         /// <remarks>
@@ -85,6 +94,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTotalTime;
+
+        /// <summary>
+        /// rvTotalTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvTotalTime;
 
         /// <summary>
         /// chkGlutenFree control.

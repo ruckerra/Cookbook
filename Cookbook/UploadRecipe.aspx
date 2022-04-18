@@ -14,20 +14,22 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <label for="txtPrepTime">Prep Time: </label>
+                <label for="txtPrepTime">Prep Time(min): </label>
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtPrepTime" runat="server"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvPrepTime" runat="server" ErrorMessage="Required" ControlToValidate="txtPrepTime" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
+                <asp:RangeValidator ID="rvPrepTime" runat="server" ControlToValidate="txtPrepTime" MinimumValue="0" MaximumValue="999" ValidationGroup="UploadRecipe" ErrorMessage=" Values must be an integer between 0 and 999." ForeColor="Red" Type="Integer"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
             <div class="col-md-2">
-                <label for="txtTotalTime">Total Time: </label>
+                <label for="txtTotalTime">Total Time(min): </label>
             </div>
             <div class="col-md-10">
                 <asp:TextBox ID="txtTotalTime" runat="server"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvTotalTime" runat="server" ErrorMessage="Required" ControlToValidate="txtTotalTime" ForeColor="Red" ValidationGroup="UploadRecipe"></asp:RequiredFieldValidator>
+                <asp:RangeValidator ID="rvTotalTime" runat="server" ControlToValidate="txtTotalTime" MinimumValue="0" MaximumValue="999" ValidationGroup="UploadRecipe" ErrorMessage=" Values must be an integer between 0 and 999." ForeColor="Red" Type="Integer"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
