@@ -69,8 +69,7 @@ namespace Cookbook
                         cmd = new SqlCommand(qry, conn);
                         cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text.Trim());
                         cmd.Parameters.AddWithValue("@email", TxtbxRegEmail.Text.Trim().ToLower());
-                        string password = FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxRegPassword.Text.Trim(), "SHA256");
-                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("@password", FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxRegPassword.Text.Trim(), "SHA256"));
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         conn.Close();

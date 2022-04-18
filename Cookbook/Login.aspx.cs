@@ -38,8 +38,7 @@ namespace Cookbook
                     {
                         SqlCommand cmd = new SqlCommand(q, conn);
                         cmd.Parameters.AddWithValue("@user", TxtbxIdentifier.Text.Trim());
-                        string password = FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxPassword.Text.Trim(), "SHA256");
-                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("@password", FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxPassword.Text.Trim(), "SHA256"));
                         conn.Open();
                         SqlDataReader sdr = cmd.ExecuteReader();
                         if (!sdr.HasRows)
