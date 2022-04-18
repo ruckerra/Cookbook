@@ -19,14 +19,31 @@ namespace Cookbook
                 Response.Redirect("~/Login.aspx");
             }
             lblInvalid.Visible = false;
+            bool admin = false;
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid AND admin = 1", conn);
+                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    admin = sdr.Read();
+                }
+                conn.Close();
+            }
+            lblHeader.Text = String.Format("<h2>{0} Recipes:</h2>", admin ? "User" : "Your");
             if (!Page.IsPostBack)
             {
                 BindRecipeList();
             }
+
         }
 
         private void BindRecipeList()
         {
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -35,7 +52,9 @@ namespace Cookbook
                 DataTable dt = new DataTable();
                 SqlCommand cmd = new SqlCommand();
 
-                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes ORDER BY recipe_id DESC";
+                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = recipe_id ORDER BY recipe_id DESC";
+                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+
                 cmd.Connection = conn;
                 sda.SelectCommand = cmd;
 
@@ -57,15 +76,15 @@ namespace Cookbook
                 using (SqlConnection conn = new SqlConnection())
                 {
                     conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE recipe_name = @recipe_name",conn);
-                    cmd.Parameters.AddWithValue("@recipe_name",rn);
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE recipe_name = @recipe_name", conn);
+                    cmd.Parameters.AddWithValue("@recipe_name", rn);
                     conn.Open();
                     SqlDataReader sdr = cmd.ExecuteReader();
                     if (sdr.HasRows)
                     {
 
                         if (sdr.Read())
-                        { 
+                        {
                             lblInvalid.Visible = true;
                             conn.Close();
                             return;
@@ -97,7 +116,7 @@ namespace Cookbook
                         vegetarian = 1;
                     }
 
-                    SqlCommand cmd = new SqlCommand("INSERT INTO recipes VALUES(@recipe_name, @prep_time, @total_time, @vegetarian, @gluten_free, @denomination, @notes, @img_path, @ingredients, @directions)",conn);
+                    SqlCommand cmd = new SqlCommand("INSERT INTO recipes VALUES(@recipe_name, @prep_time, @total_time, @vegetarian, @gluten_free, @denomination, @notes, @img_path, @ingredients, @directions)", conn);
                     cmd.Parameters.AddWithValue("@recipe_name", rn);
                     cmd.Parameters.AddWithValue("@prep_time", txtPrepTime.Text);
                     cmd.Parameters.AddWithValue("@total_time", txtTotalTime.Text);
@@ -115,10 +134,10 @@ namespace Cookbook
 
                     lblFeedback.Text = "The recipe " + rn + " was added.";
                     lblFeedback.Visible = true;
-                    
+
                     cmd.Dispose();
 
-                    cmd = new SqlCommand("INSERT INTO user_recipes(username, recipe_id) VALUES((SELECT username FROM users WHERE user_uid = @uuid), (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name))",conn);
+                    cmd = new SqlCommand("INSERT INTO user_recipes(username, recipe_id) VALUES((SELECT username FROM users WHERE user_uid = @uuid), (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name))", conn);
                     cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                     cmd.Parameters.AddWithValue("@recipe_name", rn);
                     conn.Open();
@@ -142,7 +161,7 @@ namespace Cookbook
 
         protected void gvDisplayRecipes_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if(e.Row.RowType == DataControlRowType.DataRow)
+            if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Button editButton = e.Row.FindControl("btnEdit") as Button;
                 Button deleteButton = e.Row.FindControl("btnDelete") as Button;
@@ -154,7 +173,7 @@ namespace Cookbook
 
         protected void gvDisplayRecipes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if(e.CommandName == "EditRecipe")
+            if (e.CommandName == "EditRecipe")
             {
                 int recipeid = int.Parse(e.CommandArgument.ToString());
                 lblRecipeId.Text = e.CommandArgument.ToString();
@@ -170,12 +189,18 @@ namespace Cookbook
 
         private void DeleteRecipeById(int recipeid)
         {
+            if (!Authority(recipeid))
+            {
+                Response.Redirect("~/UploadRecipe.aspx");
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd = new SqlCommand("DELETE FROM recipes WHERE recipe_id = @recipe_id", conn);
                 SqlCommand cmd2 = new SqlCommand("DELETE FROM user_recipes WHERE recipe_id = @recipe_id", conn);
-                cmd.Parameters.AddWithValue("@recipe_id",recipeid);
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd2.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
                 cmd2.ExecuteNonQuery();
@@ -186,6 +211,12 @@ namespace Cookbook
 
         private void EditRecipeById(int recipeid)
         {
+            if (!Authority(recipeid))
+            {
+                Response.Redirect("~/UploadRecipe.aspx");
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -236,6 +267,13 @@ namespace Cookbook
 
         private void UpdateRecipeById(int recipeid)
         {
+
+            if (!Authority(recipeid))
+            {
+                Response.Redirect("~/UploadRecipe.aspx");
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -296,5 +334,31 @@ namespace Cookbook
             chkVegetarian.Checked = false;
             ddType.SelectedIndex = 0;
         }
+
+        protected bool Authority(int recipeid)
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = @recipe_id", conn);
+                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (!sdr.HasRows)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (!sdr.Read())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
     }
 }
