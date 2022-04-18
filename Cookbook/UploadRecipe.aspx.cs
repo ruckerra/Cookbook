@@ -275,6 +275,27 @@ namespace Cookbook
                 return;
             }
 
+            using(SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand("SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name ", conn);
+                cmd.Parameters.AddWithValue("@recipe_name", txtRecipeName.Text.Trim());
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    sdr.Read();
+                    if(int.Parse(sdr["recipe_id"].ToString()) != recipeid)
+                    {
+                        conn.Close();
+                        lblInvalid.Visible = true;
+                        return;
+                    }
+                }
+                conn.Close();
+                lblInvalid.Visible = false;
+            }
+
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
