@@ -221,7 +221,8 @@ namespace Cookbook
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = "SELECT * FROM recipes WHERE recipe_id = " + recipeid;
+                cmd.CommandText = "SELECT * FROM recipes WHERE recipe_id = @recipe_id";
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd.Connection = conn;
                 conn.Open();
 
@@ -290,8 +291,17 @@ namespace Cookbook
                     veggie = 1;
                 }
 
-                cmd.CommandText = "UPDATE recipes SET recipe_name = '" + txtRecipeName.Text + "', directions = '" + txtDirections.Text + "', ingredients = '" + txtIngredients.Text + "', notes = '" + txtNotes.Text + "', total_time = '" +
-                     txtTotalTime.Text + "', prep_time = '" + txtPrepTime.Text + "', gluten_free = " + gluten + ", vegetarian = " + veggie + ", denomination = '" + ddType.SelectedValue.ToString() + "' WHERE recipe_id = " + recipeid;
+                cmd.CommandText = "UPDATE recipes SET recipe_name = @recipe_name, directions = @directions, ingredients = @ingredients, notes = @notes, total_time = @total_time, prep_time = @prep_time, gluten_free = @gluten_free, vegetarian = @vegetarian, denomination = @denomination WHERE recipe_id = @recipe_id";
+                cmd.Parameters.AddWithValue("@recipe_name", txtRecipeName.Text.Trim());
+                cmd.Parameters.AddWithValue("@directions", txtDirections.Text);
+                cmd.Parameters.AddWithValue("@ingredients", txtIngredients.Text);
+                cmd.Parameters.AddWithValue("@notes", txtNotes.Text);
+                cmd.Parameters.AddWithValue("@total_time", txtTotalTime.Text);
+                cmd.Parameters.AddWithValue("@prep_time", txtPrepTime.Text);
+                cmd.Parameters.AddWithValue("@gluten_free", gluten);
+                cmd.Parameters.AddWithValue("@vegetarian", veggie);
+                cmd.Parameters.AddWithValue("@denomination", ddType.SelectedValue.ToString());
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd.Connection = conn;
                 conn.Open();
                 cmd.ExecuteNonQuery();
