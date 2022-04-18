@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 using System.Web.Configuration;
-
+using System.Web.Security;
 
 namespace Cookbook
 {
@@ -37,8 +37,9 @@ namespace Cookbook
                     try
                     {
                         SqlCommand cmd = new SqlCommand(q, conn);
-                        cmd.Parameters.AddWithValue("@user", TxtbxIdentifier.Text);
-                        cmd.Parameters.AddWithValue("@password", TxtbxPassword.Text);
+                        cmd.Parameters.AddWithValue("@user", TxtbxIdentifier.Text.Trim());
+                        string password = FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxPassword.Text.Trim(), "SHA256");
+                        cmd.Parameters.AddWithValue("@password", password);
                         conn.Open();
                         SqlDataReader sdr = cmd.ExecuteReader();
                         if (!sdr.HasRows)

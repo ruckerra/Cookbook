@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Web.Configuration;
 using System.Data;
+using System.Web.Security;
 
 namespace Cookbook
 {
@@ -33,7 +34,7 @@ namespace Cookbook
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd;
                 string qry = null;
-                bool[] rtrn = Solicitation(conn, TxtbxRegUsername.Text, TxtbxRegEmail.Text);
+                bool[] rtrn = Solicitation(conn, TxtbxRegUsername.Text.Trim(), TxtbxRegEmail.Text.Trim());
                 usernameReject.Visible = false;
                 emailReject.Visible = false;
                 if (rtrn[0] || rtrn[1])
@@ -57,7 +58,7 @@ namespace Cookbook
                         cmd = new SqlCommand(qry, conn);
                         cmd.Parameters.AddWithValue("@first_name", "Tmp_First_Name");
                         cmd.Parameters.AddWithValue("@last_name", "Tmp_Last_Name");
-                        cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text);
+                        cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text.Trim());
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         conn.Close();
@@ -66,9 +67,10 @@ namespace Cookbook
 
                         qry = "INSERT INTO user_details(user_uid, username, email, password) VALUES((SELECT user_uid FROM users WHERE username = @username),@username,@email,@password)";
                         cmd = new SqlCommand(qry, conn);
-                        cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text);
-                        cmd.Parameters.AddWithValue("@email", TxtbxRegEmail.Text.ToLower());
-                        cmd.Parameters.AddWithValue("@password", TxtbxRegPassword.Text);
+                        cmd.Parameters.AddWithValue("@username", TxtbxRegUsername.Text.Trim());
+                        cmd.Parameters.AddWithValue("@email", TxtbxRegEmail.Text.Trim().ToLower());
+                        string password = FormsAuthentication.HashPasswordForStoringInConfigFile(TxtbxRegPassword.Text.Trim(), "SHA256");
+                        cmd.Parameters.AddWithValue("@password", password);
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         conn.Close();
