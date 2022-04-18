@@ -12,27 +12,17 @@ namespace Cookbook
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
+        HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.Cookies.Get("active_user_uid") == null)
+            Check_Authority();
+            c = Request.Cookies.Get("active_user_uid");
+            if (c == null && Session["Admin"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
             lblInvalid.Visible = false;
-            bool admin = false;
-            using (SqlConnection conn = new SqlConnection())
-            {
-                conn.ConnectionString = conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid AND admin = 1", conn);
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                conn.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
-                {
-                    admin = sdr.Read();
-                }
-                conn.Close();
-            }
+            bool admin = Session["Admin"] != null;
             lblHeader.Text = String.Format("<h2>{0} Recipes:</h2>", admin ? "User" : "Your");
             if (!Page.IsPostBack)
             {
@@ -53,7 +43,7 @@ namespace Cookbook
                 SqlCommand cmd = new SqlCommand();
 
                 cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = recipe_id ORDER BY recipe_id DESC";
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
 
                 cmd.Connection = conn;
                 sda.SelectCommand = cmd;
@@ -138,7 +128,7 @@ namespace Cookbook
                     cmd.Dispose();
 
                     cmd = new SqlCommand("INSERT INTO user_recipes(username, recipe_id) VALUES((SELECT username FROM users WHERE user_uid = @uuid), (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name))", conn);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    cmd.Parameters.AddWithValue("@uuid", c.Value);
                     cmd.Parameters.AddWithValue("@recipe_name", rn);
                     conn.Open();
                     cmd.ExecuteNonQuery();
@@ -372,7 +362,7 @@ namespace Cookbook
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = @recipe_id", conn);
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                 cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
@@ -389,6 +379,42 @@ namespace Cookbook
                 }
             }
             return true;
+        }
+
+        private void Check_Authority()
+        {
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+            if (c != null)
+            {
+                using (conn)
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE user_uid = @uuid AND admin = 1", conn);
+                    cmd.Parameters.AddWithValue("@uuid", c.Value);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+                        c.Expires = DateTime.Now.AddDays(-1);
+                        conn.Close();
+                    }
+                }
+            }
+            if (Session["Admin"] != null)
+            {
+                using (conn)
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid AND admin = 1", conn);
+                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"].ToString());
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (!sdr.HasRows)
+                    {
+                        Session.Remove("Admin");
+                        conn.Close();
+                    }
+                }
+            }
         }
 
     }

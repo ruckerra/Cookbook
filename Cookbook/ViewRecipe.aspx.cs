@@ -11,13 +11,15 @@ namespace Cookbook
 {
     public partial class ViewRecipe : System.Web.UI.Page
     {
+        HttpCookie lvc = null;
         protected void Page_Load(object sender, EventArgs e)
         {
+            lvc = Request.Cookies.Get("last_viewed_recipe");
             if (Request.QueryString["recipe_id"] == null)
             {
-                if(Request.Cookies.Get("last_viewed_recipe") != null)
+                if(lvc != null)
                 {
-                    Response.Redirect("~/ViewRecipe?recipe_id=" + Request.Cookies.Get("last_viewed_recipe").Value);
+                    Response.Redirect("~/ViewRecipe?recipe_id=" + lvc.Value);
                 }
             }
             if (!Page.IsPostBack)

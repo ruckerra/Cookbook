@@ -14,22 +14,23 @@ namespace Cookbook
 {
     public partial class AccountPage : System.Web.UI.Page
     {
+        HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            if(Request.Cookies.Get("active_user_uid") == null)
+            Check_Authority();
+            c = Request.Cookies.Get("active_user_uid");
+            if (c == null && Session["Admin"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
             
             string img_path = null;
-            bool admin = false;
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 string q = "SELECT * FROM users INNER JOIN user_details ON users.user_uid = user_details.user_uid WHERE users.user_uid = @uuid";
                 SqlCommand cmd = new SqlCommand(q, conn);
-                cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString()); 
                 conn.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
@@ -43,7 +44,6 @@ namespace Cookbook
                 {
                     Response.Redirect("~/Login.aspx");
                 }
-                admin = sdr["admin"].ToString() == "True";
                 StringBuilder sb = new StringBuilder();
                 sb.Append("<img class=\"float-left\" src ='/Content/Images/");
                 img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/" + img_path;
@@ -56,7 +56,7 @@ namespace Cookbook
                 sb.Append("<h1>");
                 sb.Append(sdr["username"]);
                 sb.Append("</h1>");
-                if (Request.Cookies.Get("active_user_uid") != null && Request.Cookies.Get("active_user_uid").Value == sdr["user_uid"].ToString())
+                if ((c != null && c.Value == sdr["user_uid"].ToString()) || (Session["Admin"]!=null && Session["Admin"].ToString() == sdr["user_uid"].ToString()))
                 {
                     sb.Append("<h3>");
                     sb.Append(sdr["email"].ToString());
@@ -65,30 +65,26 @@ namespace Cookbook
                 user_info.Text = sb.ToString();
                     conn.Close();
             }//using
-            if (Request.Cookies.Get("active_user_uid") != null)
-            {
-                btnSignOut.Visible = true;
-                btnOp.Visible = admin;
-            }
-            else
-            {
-                btnSignOut.Visible = false;
-                btnOp.Visible = false;
-            }
-            
+            btnSignOut.Visible = c != null || Session["Admin"] != null;
+            btnOp.Visible = Session["Admin"] != null && c == null;
         }//page_load
 
         protected void btnSignOut_Click(object sender, EventArgs e)
         {
-            if (Request.Cookies.Get("active_user_uid") != null)
+            if (Session["Admin"] != null)
             {
-                Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
-                if(Request.Cookies.Get("last_viewed_recipe") != null) { 
-                    Response.Cookies.Get("last_viewed_recipe").Expires = DateTime.Now.AddDays(-1);
-                }
-                btnSignOut.Visible = false;
+                Session.Remove("Admin");
                 Response.Redirect("~/Login.aspx");
             }
+            if (c != null)
+            {
+                Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
+            }
+            if(Request.Cookies.Get("last_viewed_recipe") != null) { 
+                Response.Cookies.Get("last_viewed_recipe").Expires = DateTime.Now.AddDays(-1);
+            }
+            btnSignOut.Visible = false;
+            Response.Redirect("~/Login.aspx");
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
@@ -109,7 +105,7 @@ namespace Cookbook
                         {
                             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                             SqlCommand cmd = new SqlCommand("SELECT username, user_image_path FROM users WHERE user_uid = @uuid", conn);
-                            cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                            cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                             conn.Open();
                             SqlDataReader sdr = cmd.ExecuteReader();
                             sdr.Read();
@@ -122,7 +118,7 @@ namespace Cookbook
                         {
                             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                             SqlCommand cmd = new SqlCommand("UPDATE users SET user_image_path = @img WHERE user_uid = @uuid", conn);
-                            cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                            cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                             cmd.Parameters.AddWithValue("@img", img_path);
                             conn.Open();
                             cmd.ExecuteNonQuery();
@@ -143,5 +139,42 @@ namespace Cookbook
         {
             Response.Redirect("~/ViewUsers.aspx");
         }
+
+        private void Check_Authority()
+        {
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+            if (c != null)
+            {
+                using (conn)
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE user_uid = @uuid AND admin = 1", conn);
+                    cmd.Parameters.AddWithValue("@uuid", c.Value);
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (sdr.HasRows)
+                    {
+                        c.Expires = DateTime.Now.AddDays(-1);
+                        conn.Close();
+                    }
+                }
+            }
+            if (Session["Admin"] != null)
+            {
+                using (conn)
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid AND admin = 1", conn);
+                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"].ToString());
+                    conn.Open();
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    if (!sdr.HasRows)
+                    {
+                        Session.Remove("Admin");
+                        conn.Close();
+                    }
+                }
+            }
+        }
+
     }//class
 }//namespace
