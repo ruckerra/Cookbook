@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <asp:Button ID="btnReturn" runat="server" Text="Go Back" CssClass="btn btn-primary" />
+            <asp:Button ID="btnReturn" runat="server" Text="Go Back" CssClass="btn btn-primary" OnClick="btnReturn_Click" />
         </div>
     </div>
 </asp:Content>

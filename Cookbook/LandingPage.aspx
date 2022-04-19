@@ -48,6 +48,7 @@
                 <asp:TemplateField HeaderText="Save Recipe">
                     <ItemTemplate>
                         <asp:Button ID="btnFavRecipe" runat="server" Text="Favorite" CssClass="btn btn-primary" CommandName="FavRecipe"/>
+                        <asp:Button ID="btnViewRecipe" runat="server" Text =" View" CssClass="btn btn-primary" CommandName="ViewRecipe" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
