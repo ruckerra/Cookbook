@@ -132,6 +132,9 @@ namespace Cookbook
             {
                 Button fav = e.Row.FindControl("btnFavRecipe") as Button;
                 fav.CommandArgument = e.Row.Cells[0].Text;
+                Button view = e.Row.FindControl("btnViewRecipe") as Button;
+                view.CommandArgument = e.Row.Cells[0].Text;
+
                 if (Request.Cookies.Get("active_user_uid") == null)
                 {
                     fav.Enabled = false;
@@ -170,6 +173,31 @@ namespace Cookbook
                 FavoriteRecipe(recipe_name);
             }
 
+            else if(e.CommandName == "ViewRecipe")
+            {
+                string recipe_name = e.CommandArgument.ToString();
+                ViewRecipe(recipe_name);
+            }
+
+        }
+
+        private void ViewRecipe(string recipe_name)
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand("SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name", conn);
+                cmd.Parameters.AddWithValue("@recipe_name", recipe_name);
+                string recipe_id = null;
+                conn.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                sdr.Read();
+                recipe_id = sdr["recipe_id"].ToString();
+                conn.Close();
+                cmd.Dispose();
+
+                Response.Redirect("ViewRecipe.aspx?recipe_id=" + recipe_id);
+            }
         }
 
         protected void FavoriteRecipe(string recipe_name)
