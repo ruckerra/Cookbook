@@ -32,13 +32,13 @@ namespace Cookbook
         private void BindRecipeList()
         {
 
-            
+
             StringBuilder sb = new StringBuilder("SELECT recipe_name, denomination, total_time, vegetarian, gluten_free FROM {0}recipes{1}");
             int l = sb.Length;
-            
-            if(txtRecipeName.Text != "")
+
+            if (txtRecipeName.Text != "")
             {
-                StringBuilder str = new StringBuilder((sb.Length == l ? " WHERE" : " AND" ) + " LOWER(recipe_name) LIKE LOWER(");
+                StringBuilder str = new StringBuilder((sb.Length == l ? " WHERE" : " AND") + " LOWER(recipe_name) LIKE LOWER(");
                 string[] st = txtRecipeName.Text.Split();
                 if (st.Length > 0)
                 {
@@ -57,7 +57,7 @@ namespace Cookbook
                 sb.Append(str.ToString());
             }
 
-            if(dlRecipeType.Text != "")
+            if (dlRecipeType.Text != "")
             {
                 sb.Append((sb.Length == l ? " WHERE" : " AND") + " denomination = @denom");
             }
@@ -79,7 +79,7 @@ namespace Cookbook
                 fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
                 sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
             }
-            
+
             conn = new SqlConnection();
             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
@@ -87,7 +87,7 @@ namespace Cookbook
             DataTable dt = new DataTable();
 
             cmd = new SqlCommand(String.Format(sb.ToString(), fmt == "" ? "" : "(", fmt == "" ? "" : fmt), conn);
-            if (c != null) { 
+            if (c != null || Session["Admin"] != null) { 
                 try
                 {
                     cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());

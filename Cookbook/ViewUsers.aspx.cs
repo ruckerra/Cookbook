@@ -16,7 +16,7 @@ namespace Cookbook
         protected void Page_Load(object sender, EventArgs e)
         {
             c = Request.Cookies.Get("active_user_uid");
-            Check_Authority();
+            SiteMaster.Check_Authority(c);
             if (Session["Admin"] != null)
             {
                 if (!Page.IsPostBack)

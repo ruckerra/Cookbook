@@ -15,8 +15,8 @@ namespace Cookbook
         HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-            Check_Authority();
             c = Request.Cookies.Get("active_user_uid");
+            SiteMaster.Check_Authority(c);
             if (c == null && Session["Admin"] == null)
             {
                 Response.Redirect("~/Login.aspx");

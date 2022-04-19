@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 using System.Web.Configuration;
+using System.Threading;
 
 namespace Cookbook
 {
@@ -16,9 +17,9 @@ namespace Cookbook
         HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-            Check_Authority();
+            SiteMaster.Check_Authority(c);
             c = Request.Cookies.Get("active_user_uid");
-            if(Session["Admin"] != null)
+            if (Session["Admin"] != null)
             {
                 if (active_user_uid.Text != Session["Admin"].ToString())
                 {
@@ -39,22 +40,22 @@ namespace Cookbook
                     {
                         Response.Cookies.Get("active_user_uid").Expires = DateTime.Now.AddDays(-1);
                         active_user_uid.Text = "[NULL]";
-                    } else
+                    }
+                    else
                     {
                         active_user_uid.Text = c.Value;
                     }
                     conn.Close();
                 }
-                
+
             }
             else
             {
                 active_user_uid.Text = "[NULL]";
             }
-            
-        }
 
-        private void Check_Authority()
+        }
+        public static void Check_Authority(HttpCookie c)
         {
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -73,17 +74,17 @@ namespace Cookbook
                     }
                 }
             }
-            if (Session["Admin"] != null)
+            if (System.Web.HttpContext.Current.Session["Admin"] != null)
             {
                 using (conn)
                 {
                     SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid AND admin = 1", conn);
-                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"].ToString());
+                    cmd.Parameters.AddWithValue("@uuid", System.Web.HttpContext.Current.Session["Admin"].ToString());
                     conn.Open();
                     SqlDataReader sdr = cmd.ExecuteReader();
                     if (!sdr.HasRows)
                     {
-                        Session.Remove("Admin");
+                        System.Web.HttpContext.Current.Session.Remove("Admin");
                         conn.Close();
                     }
                 }
