@@ -20,7 +20,10 @@ namespace Cookbook
             c = Request.Cookies.Get("active_user_uid");
             if(Session["Admin"] != null)
             {
-                active_user_uid.Text = Session["Admin"].ToString();
+                if (active_user_uid.Text != Session["Admin"].ToString())
+                {
+                    active_user_uid.Text = Session["Admin"].ToString();
+                }
             }
             else if (c != null)
             {
@@ -48,6 +51,7 @@ namespace Cookbook
             {
                 active_user_uid.Text = "[NULL]";
             }
+            
         }
 
         private void Check_Authority()

@@ -17,14 +17,18 @@ namespace Cookbook
         {
             c = Request.Cookies.Get("active_user_uid");
             Check_Authority();
-            if(Session["Admin"] != null)
+            if (Session["Admin"] != null)
             {
-                BindRecipeList();
+                if (!Page.IsPostBack)
+                {
+                    BindRecipeList();
+                }
             } else
             {
                 Response.Redirect("~/LandingPage.aspx");
             }
         }
+        
         private void BindRecipeList()
         {
             using (SqlConnection conn = new SqlConnection())

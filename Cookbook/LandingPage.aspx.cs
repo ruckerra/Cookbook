@@ -74,7 +74,7 @@ namespace Cookbook
             SqlConnection conn;
             SqlCommand cmd;
             string fmt = "";
-            if (chkFavorites.Checked && c.Value != null)
+            if (chkFavorites.Checked && (c != null || Session["Admin"] != null))
             {
                 fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
                 sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
