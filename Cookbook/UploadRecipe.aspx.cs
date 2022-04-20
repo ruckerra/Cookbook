@@ -201,9 +201,12 @@ namespace Cookbook
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd = new SqlCommand("DELETE FROM recipes WHERE recipe_id = @recipe_id", conn);
                 SqlCommand cmd2 = new SqlCommand("DELETE FROM user_recipes WHERE recipe_id = @recipe_id", conn);
+                SqlCommand cmd3 = new SqlCommand("DELETE FROM users_favorites WHERE recipe_id = @recipe_id", conn);
                 cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd2.Parameters.AddWithValue("@recipe_id", recipeid);
+                cmd3.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
+                cmd3.ExecuteNonQuery();
                 cmd2.ExecuteNonQuery();
                 cmd.ExecuteNonQuery();
                 BindRecipeList();
@@ -256,6 +259,7 @@ namespace Cookbook
                     pnlDisplayRecipes.Visible = false;
                     recipeImg.Visible = true;
                     fuRecipeImage.Visible = true;
+                    lblHeader.Visible = false;
                 }
 
 
@@ -378,6 +382,7 @@ namespace Cookbook
                 fuRecipeImage.Visible = false;
                 pnlDisplayRecipes.Visible = true;
                 btnSave.Visible = true;
+                lblHeader.Visible = true;
 
                 BindRecipeList();
 
@@ -403,6 +408,7 @@ namespace Cookbook
             fuRecipeImage.Visible = false;
             pnlDisplayRecipes.Visible = true;
             btnSave.Visible = true;
+            lblHeader.Visible = true;
 
             txtRecipeName.Text = "";
             txtDirections.Text = "";
