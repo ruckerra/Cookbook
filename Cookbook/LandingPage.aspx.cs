@@ -191,6 +191,10 @@ namespace Cookbook
                 string recipe_id = null;
                 conn.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
+                if (!sdr.HasRows)
+                {
+                    Response.Redirect("~/LandingPage.aspx");
+                }
                 sdr.Read();
                 recipe_id = sdr["recipe_id"].ToString();
                 conn.Close();
@@ -211,6 +215,10 @@ namespace Cookbook
                     string recipe_id = null;
                     conn.Open();
                     SqlDataReader sdr = cmd.ExecuteReader();
+                    if (!sdr.HasRows)
+                    {
+                        Response.Redirect("~/LandingPage.aspx");
+                    }
                     sdr.Read();
                     recipe_id = sdr["recipe_id"].ToString();
                     conn.Close();
