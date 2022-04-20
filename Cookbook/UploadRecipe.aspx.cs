@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Web.Configuration;
 using System.Data;
+using System.IO;
 
 namespace Cookbook
 {
@@ -236,7 +237,7 @@ namespace Cookbook
                     txtNotes.Text = sdr["ingredients"].ToString();
                     txtPrepTime.Text = sdr["prep_time"].ToString();
                     txtTotalTime.Text = sdr["total_time"].ToString();
-
+                    string img_path = sdr["recipe_image_path"].ToString();
                     if (int.Parse(sdr["gluten_free"].ToString()) == 1)
                     {
                         chkGlutenFree.Checked = true;
@@ -253,7 +254,8 @@ namespace Cookbook
                     btnSave.Visible = false;
                     btnCancel.Visible = true;
                     pnlDisplayRecipes.Visible = false;
-
+                    recipeImg.Visible = true;
+                    fuRecipeImage.Visible = true;
                 }
 
 
@@ -275,7 +277,50 @@ namespace Cookbook
                 return;
             }
 
-            using(SqlConnection conn = new SqlConnection())
+            string img_path = null;
+            if (fuRecipeImage.HasFile)
+            {
+                img_path = fuRecipeImage.FileName;
+                string[] ch_ext = img_path.Split('.');
+                string s = ch_ext[ch_ext.Length - 1];
+                s = s.ToLower();
+                FileInfo prev_img = null;
+                if (s == "png" || s == "gif" || s == "jpg" || s == "jpeg" || s == "webp" || s == "svg")
+                {
+                    using (SqlConnection conn = new SqlConnection())
+                    {
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        SqlCommand cmd = new SqlCommand("SELECT recipe_id, recipe_image_path FROM recipes WHERE recipe_id = @recipe_id", conn);
+                        cmd.Parameters.AddWithValue("@recipe_id", recipeid);
+                        conn.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        if (sdr.HasRows)
+                        {
+                            sdr.Read();
+                            prev_img = new FileInfo(Server.MapPath(Request.ApplicationPath) + "/Content/Images/Recipes/" + sdr["recipe_image_path"].ToString());
+                        }
+                        conn.Close();
+                    }
+                    img_path = recipeid.ToString() + "." + s;
+                    using (SqlConnection conn = new SqlConnection())
+                    {
+                        conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                        SqlCommand cmd = new SqlCommand("UPDATE recipes SET recipe_image_path = @img WHERE recipe_id = @recipe_id", conn);
+                        cmd.Parameters.AddWithValue("@recipe_id", recipeid);
+                        cmd.Parameters.AddWithValue("@img", img_path);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
+                    if (prev_img.Exists)
+                    {
+                        prev_img.Delete();
+                    }
+                    fuRecipeImage.SaveAs(Server.MapPath(Request.ApplicationPath) + "Content/Images/Recipes/" + img_path);
+                }
+            }
+
+            using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                 SqlCommand cmd = new SqlCommand("SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name ", conn);
@@ -329,6 +374,8 @@ namespace Cookbook
 
                 btnCancel.Visible = false;
                 btnUpdate.Visible = false;
+                recipeImg.Visible = false;
+                fuRecipeImage.Visible = false;
                 pnlDisplayRecipes.Visible = true;
                 btnSave.Visible = true;
 
@@ -352,6 +399,8 @@ namespace Cookbook
         {
             btnCancel.Visible = false;
             btnUpdate.Visible = false;
+            recipeImg.Visible = false;
+            fuRecipeImage.Visible = false;
             pnlDisplayRecipes.Visible = true;
             btnSave.Visible = true;
 

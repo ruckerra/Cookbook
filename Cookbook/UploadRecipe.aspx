@@ -93,6 +93,13 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-12">
+
+                <b><asp:Label for="fuRecipeImage" ID="recipeImg" runat="server" Text="Recipe Image: (This will be viewable when viewing the recipe.)" Visible ="false" style="display:block"></asp:Label></b>
+                <asp:FileUpload ID="fuRecipeImage" style="margin-bottom:1rem" runat="server" ClientIDMode="Static" CssClass="form-control-file" Visible="false"/>
+            </div>
+        </div>
+        <div class="row">
             <div class ="col-md-6">
                 <asp:Button ID="btnSave" runat="server" Text="Upload" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
                 <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" OnClick="btnUpdate_Click" />
