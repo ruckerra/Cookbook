@@ -24,22 +24,13 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.Panel PnlRegister;
 
         /// <summary>
-        /// usernameReject control.
+        /// reject control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label usernameReject;
-
-        /// <summary>
-        /// emailReject control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label emailReject;
+        protected global::System.Web.UI.WebControls.Label reject;
 
         /// <summary>
         /// rfvUsername control.

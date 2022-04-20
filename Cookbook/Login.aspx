@@ -7,7 +7,7 @@
                 <div id="LoginInput" class="col-md-4">
                     <h2>Log In</h2>
                     <div class="input-group" style="margin-bottom:1rem">
-                        <asp:Label ID="reject" runat="server" Text="Username, Email, or Password is incorrect" ForeColor="Red" Visible="false" style="display:block"></asp:Label>
+                        <asp:Label ID="reject" runat="server" Text="Your account is not recognized and cannot login at this time." ForeColor="Red" Visible="false" style="display:block"></asp:Label>
                         <asp:RequiredFieldValidator ID="rfvUsername" runat="server" ControlToValidate="TxtbxIdentifier" EnableTheming="True" ErrorMessage="Required*" ForeColor="Red" ValidationGroup="Login"></asp:RequiredFieldValidator>
                         <asp:TextBox ID="TxtbxIdentifier" runat="server" style="margin-bottom:1rem" placeholder="Username or Email" CssClass="form-control"></asp:TextBox>
                         <br />

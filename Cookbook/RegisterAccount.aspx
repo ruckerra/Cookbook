@@ -5,8 +5,7 @@
             <div class="col-md-4"></div>
             <div class="col-md-4">
                 <h2>Create an Account</h2>
-                <asp:Label ID="usernameReject" runat="server" ForeColor="Red" Text="Requested Username Already Exists" Visible="false" style="display:block"></asp:Label>
-                <asp:Label ID="emailReject" runat="server" ForeColor="Red" Text="Given Email is Already Registered" Visible="false"></asp:Label>
+                <asp:Label ID="reject" runat="server" ForeColor="Red" Text="Failure to register account." Visible="false" style="display:block"></asp:Label>
                 <div class="input-group">
                     <div>
                         <asp:RequiredFieldValidator ID="rfvUsername" runat="server" ControlToValidate="TxtbxRegUsername" EnableTheming="True" ErrorMessage="Required* " ForeColor="Red" ValidationGroup="Registration"></asp:RequiredFieldValidator>

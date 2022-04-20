@@ -35,19 +35,10 @@ namespace Cookbook
                 SqlCommand cmd;
                 string qry = null;
                 bool[] rtrn = Solicitation(conn, TxtbxRegUsername.Text.Trim(), TxtbxRegEmail.Text.Trim());
-                usernameReject.Visible = false;
-                emailReject.Visible = false;
+                reject.Visible = false;
                 if (rtrn[0] || rtrn[1])
                 {
-                    if (rtrn[0])
-                    {
-                        usernameReject.Visible = true;
-                    }
-                    if (rtrn[1])
-                    {
-                        emailReject.Visible = true;
-                    }
-                    Console.WriteLine("No action was taken");
+                    reject.Visible = true;
                     return;
                 }//if
                 else
