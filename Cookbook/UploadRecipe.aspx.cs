@@ -53,7 +53,7 @@ namespace Cookbook
                 DataTable dt = new DataTable();
                 SqlCommand cmd = new SqlCommand();
 
-                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = recipe_id ORDER BY recipe_id DESC";
+                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR  (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid) AND user_recipes.recipe_id = recipes.recipe_id) = recipes.recipe_id ORDER BY recipe_id DESC";
                 cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
 
                 cmd.Connection = conn;
@@ -420,7 +420,7 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = @recipe_id", conn);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid) AND recipe_id = @recipe_id) = @recipe_id", conn);
                 cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                 cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
