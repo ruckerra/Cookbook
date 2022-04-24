@@ -344,7 +344,7 @@ namespace Cookbook
                 if (sdr.HasRows)
                 {
                     sdr.Read();
-                    if(int.Parse(sdr["recipe_id"].ToString()) != recipeid)
+                    if (int.Parse(sdr["recipe_id"].ToString()) != recipeid)
                     {
                         conn.Close();
                         lblInvalid.Visible = true;

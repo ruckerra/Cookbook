@@ -41,7 +41,8 @@ namespace Cookbook
                         conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                         SqlCommand cmd = new SqlCommand();
 
-                        cmd.CommandText = "SELECT * FROM Recipes WHERE recipe_id = " + recipe_id;
+                        cmd.CommandText = "SELECT * FROM Recipes WHERE recipe_id = @recipe_id";
+                        cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
                         cmd.Connection = conn;
 
                         conn.Open();
