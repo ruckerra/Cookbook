@@ -101,7 +101,7 @@
         </div>
         <div class="row">
             <div class ="col-md-6">
-                <asp:Button ID="btnSave" runat="server" Text="Upload" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe"/>
+                <asp:Button ID="btnSave" runat="server" Text="Upload" OnClick="btnSave_Click" CssClass="btn btn-primary" ValidationGroup="UploadRecipe" />
                 <asp:Button ID="btnUpdate" runat="server" Text="Update" Visible="False" CssClass="btn btn-primary" OnClick="btnUpdate_Click" />
                 <asp:Button ID="btnCancel" runat="server" Text="Cancel" Visible="False" CssClass="btn btn-secondary" OnClick="btnCancel_Click"/>
                 <asp:Label ID="lblFeedback" runat="server" Text="" Visible ="False"></asp:Label>
@@ -112,6 +112,70 @@
             </div>
         </div>
 
+    </asp:Panel>
+    <asp:Panel ID="pnlAddNutrition" runat="server" Visible="false">
+        <h2>Nutrition Information</h2>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtCalories">Calories: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtCalories" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvCalories" runat="server" ErrorMessage="Required" ControlToValidate="txtCalories" ForeColor="Red" ValidationGroup="Nutrition"></asp:RequiredFieldValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtFat">Fat: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtFat" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtCarbs">Carbs: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtCarbs" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtFiber">Fiber: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtFiber" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtProtein">Protein: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtProtein" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtServings">Servings: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtServings" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <label for="txtNutritionNotes">Notes: </label>
+            </div>
+            <div class="col-md-6">
+                <asp:TextBox ID="txtNutritionNotes" TextMode="MultiLine" runat="server"></asp:TextBox>
+            </div>
+        </div>
+        <div class="row">
+            <asp:Button ID="btnSubmitNutrition" runat="server" ValidationGroup="Nutrition" Text="Submit Nutrition" CssClass="btn btn-primary" OnClick="btnSubmitNutrition_Click" />
+            <asp:Button ID="btnCancelNutrition" runat="server" Text="Cancel Nutrition" CssClass="btn btn-secondary" OnClick="btnCancelNutrition_Click" />
+        </div>
     </asp:Panel>
     <asp:Panel ID="pnlDisplayRecipes" runat="server">
         <asp:GridView ID="gvDisplayRecipes" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="recipe_id" OnRowCommand="gvDisplayRecipes_RowCommand" OnRowDataBound="gvDisplayRecipes_RowDataBound">
@@ -124,6 +188,7 @@
                 <asp:TemplateField HeaderText="Actions">
                     <ItemTemplate>
                         <asp:Button ID="btnEdit" runat="server" CssClass="btn btn-primary" Text="Edit" CommandName="EditRecipe" />
+                        <asp:Button ID="btnNutrition" runat="server" CssClass="btn btn-secondary" Text="Nutrition" CommandName ="Nutrition" />
                         <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete" Width="61px" OnClientClick="return confirm('Are you sure you want to delete this recipe?');" CommandName="DeleteRecipe" />
                     </ItemTemplate>
                 </asp:TemplateField>

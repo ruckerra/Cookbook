@@ -53,9 +53,8 @@ namespace Cookbook
                 DataTable dt = new DataTable();
                 SqlCommand cmd = new SqlCommand();
 
-                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = recipe_id ORDER BY recipe_id DESC";
+                cmd.CommandText = "SELECT recipe_id, recipe_name, ingredients, total_time FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid) AND user_recipes.recipe_id = recipes.recipe_id) = recipes.recipe_id ORDER BY recipe_id DESC";
                 cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-
                 cmd.Connection = conn;
                 sda.SelectCommand = cmd;
 
@@ -166,9 +165,11 @@ namespace Cookbook
             {
                 Button editButton = e.Row.FindControl("btnEdit") as Button;
                 Button deleteButton = e.Row.FindControl("btnDelete") as Button;
+                Button nutritionButton = e.Row.FindControl("btnNutrition") as Button;
 
                 editButton.CommandArgument = e.Row.Cells[0].Text;
                 deleteButton.CommandArgument = e.Row.Cells[0].Text;
+                nutritionButton.CommandArgument = e.Row.Cells[0].Text;
             }
         }
 
@@ -186,6 +187,12 @@ namespace Cookbook
                 int recipeid = int.Parse(e.CommandArgument.ToString());
                 DeleteRecipeById(recipeid);
             }
+            else if (e.CommandName == "Nutrition")
+            {
+                int recipeid = int.Parse(e.CommandArgument.ToString());
+                lblRecipeId.Text = e.CommandArgument.ToString();
+                EditNutritionById(recipeid);
+            }
         }
 
         private void DeleteRecipeById(int recipeid)
@@ -199,13 +206,16 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd0 = new SqlCommand("DELETE FROM nutrition WHERE recipe_id = @recipe_id", conn);
                 SqlCommand cmd = new SqlCommand("DELETE FROM recipes WHERE recipe_id = @recipe_id", conn);
                 SqlCommand cmd2 = new SqlCommand("DELETE FROM user_recipes WHERE recipe_id = @recipe_id", conn);
                 SqlCommand cmd3 = new SqlCommand("DELETE FROM users_favorites WHERE recipe_id = @recipe_id", conn);
+                cmd0.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd2.Parameters.AddWithValue("@recipe_id", recipeid);
                 cmd3.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
+                cmd0.ExecuteNonQuery();
                 cmd3.ExecuteNonQuery();
                 cmd2.ExecuteNonQuery();
                 cmd.ExecuteNonQuery();
@@ -426,7 +436,7 @@ namespace Cookbook
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid)) = @recipe_id", conn);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM recipes WHERE (SELECT admin FROM users WHERE user_uid = @uuid) = 1 OR (SELECT recipe_id FROM user_recipes WHERE username = (SELECT username FROM users WHERE user_uid = @uuid) AND recipe_id = @recipe_id) = @recipe_id", conn);
                 cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
                 cmd.Parameters.AddWithValue("@recipe_id", recipeid);
                 conn.Open();
@@ -446,5 +456,128 @@ namespace Cookbook
             return true;
         }
 
+        protected void btnAddNutrition_Click(object sender, EventArgs e)
+        {
+            pnlAddNutrition.Visible = true;
+            pnlDisplayRecipes.Visible = false;
+        }
+
+        protected void btnCancelNutrition_Click(object sender, EventArgs e)
+        {
+            pnlAddNutrition.Visible = false;
+            pnlDisplayRecipes.Visible = true;
+            pnlUploadRecipe.Visible = true;
+            BindRecipeList();
+            txtCalories.Text = "";
+            txtFat.Text = "";
+            txtCarbs.Text = "";
+            txtFiber.Text = "";
+            txtProtein.Text = "";
+            txtServings.Text = "";
+            txtNutritionNotes.Text = "";
+        }
+
+        private void EditNutritionById(int recipeid)
+        {
+            pnlAddNutrition.Visible = true;
+            if (!Authority(recipeid))
+            {
+                Response.Redirect("~/UploadRecipe.aspx");
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "SELECT * FROM nutrition WHERE recipe_id = @recipe_id";
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
+                cmd.Connection = conn;
+                conn.Open();
+
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    txtCalories.Text = sdr["calories"].ToString();
+                    txtFat.Text = sdr["fat"].ToString();
+                    txtCarbs.Text = sdr["carbs"].ToString();
+                    txtFiber.Text = sdr["fiber"].ToString();
+                    txtProtein.Text = sdr["protein"].ToString();
+                    txtServings.Text = sdr["servings"].ToString();
+                    txtNutritionNotes.Text = sdr["notes"].ToString();
+
+                }
+
+                pnlDisplayRecipes.Visible = false;
+                pnlUploadRecipe.Visible = false;
+            }
+        }
+
+        protected void btnSubmitNutrition_Click(object sender, EventArgs e)
+        {
+            int recipeid = int.Parse(lblRecipeId.Text);
+            SubmitNutritionById(recipeid);
+        }
+
+        private void SubmitNutritionById(int recipeid)
+        {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "SELECT * FROM nutrition WHERE recipe_id = @recipe_id";
+                cmd.Parameters.AddWithValue("@recipe_id", recipeid);
+                cmd.Connection = conn;
+                conn.Open();
+
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                if (sdr.HasRows)
+                {
+                    sdr.Close();
+                    btnSubmitNutrition.Text = "Update Nutrition";
+                    SqlCommand command = new SqlCommand();
+                    command.CommandText = "UPDATE nutrition SET calories = @calories, fat = @fat, carbs = @carbs," +
+                        " fiber = @fiber, protein = @protein, servings = @servings, notes = @notes " +
+                        "WHERE recipe_id = @recipe_id";
+                    command.Parameters.AddWithValue("@calories", txtCalories.Text.Trim());
+                    command.Parameters.AddWithValue("@fat", txtFat.Text.Trim());
+                    command.Parameters.AddWithValue("@carbs", txtCarbs.Text.Trim());
+                    command.Parameters.AddWithValue("@fiber", txtFiber.Text.Trim());
+                    command.Parameters.AddWithValue("@protein", txtProtein.Text.Trim());
+                    command.Parameters.AddWithValue("@servings", txtServings.Text.Trim());
+                    command.Parameters.AddWithValue("@notes", txtNutritionNotes.Text.Trim());
+                    command.Parameters.AddWithValue("@recipe_id", recipeid);
+
+                    command.Connection = conn;
+
+                    command.ExecuteNonQuery();
+                }
+                else
+                {
+                    sdr.Close();
+                    SqlCommand insert_command = new SqlCommand();
+                    insert_command.CommandText = "INSERT INTO nutrition VALUES (@recipe_id, @calories, @fat, @carbs," +
+                        " @fiber, @protein, @servings, @notes)";
+                    insert_command.Parameters.AddWithValue("@calories", txtCalories.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@fat", txtFat.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@carbs", txtCarbs.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@fiber", txtFiber.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@protein", txtProtein.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@servings", txtServings.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@notes", txtNutritionNotes.Text.Trim());
+                    insert_command.Parameters.AddWithValue("@recipe_id", recipeid);
+
+                    insert_command.Connection = conn;
+
+                    insert_command.ExecuteNonQuery();
+                }
+
+                pnlDisplayRecipes.Visible = true;
+                pnlUploadRecipe.Visible = true;
+                pnlAddNutrition.Visible = false;
+            }
+        }
     }
 }
