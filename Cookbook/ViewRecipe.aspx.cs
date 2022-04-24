@@ -27,7 +27,14 @@ namespace Cookbook
                     HttpCookie c = new HttpCookie("last_viewed_recipe");
                     c.Value = Request.QueryString["recipe_id"].ToString();
                     Response.Cookies.Add(c);
-                    int recipe_id = int.Parse(Request.QueryString["recipe_id"]);
+                    int recipe_id = -1;
+                    try
+                    {
+                        recipe_id = int.Parse(Request.QueryString["recipe_id"]);
+                    } catch(Exception ex)
+                    {
+                        Response.Redirect("~/LandingPage.aspx");
+                    }
 
                     using (SqlConnection conn = new SqlConnection())
                     {
@@ -72,6 +79,9 @@ namespace Cookbook
                             imgRecipe.ImageUrl = img_path;
                         }
                     }
+                } else
+                {
+                    Response.Redirect("LandingPage.aspx");
                 }
             }
         }
