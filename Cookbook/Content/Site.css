@@ -1,4 +1,9 @@
 ﻿/* Move down content because we have a fixed navbar that is 50px tall */
+@font-face {
+    font-family: "Raleway-Regular";
+    src: url('/fonts/Raleway-Regular.ttf');
+}
+
 body {
     background-color: #f0ffff; /*#98c0db; #e6f5ff;*/
     background-image: url(/Content/Images/Default/background1.gif);
@@ -6,7 +11,7 @@ body {
     padding-top: 50px;
     padding-bottom: 20px;
     color: #02111b !important;
-    font-family: Helvetica;
+    font-family: "Raleway-Regular", Helvetica;
 }
 
 .btn-frost {
@@ -83,8 +88,8 @@ body {
     /*background-color: rgba(255, 255, 255, .15);*/
     border: none;
     box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
-    background-color: rgba(226, 241, 242, 0.7);
-    background-image: linear-gradient(125deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2),70%);
+    background-color: rgba(226, 241, 242, 0.85);
+    background-image: linear-gradient(125deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2),85%);
 }
 
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter:none)) {
@@ -96,7 +101,7 @@ body {
         box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
         background-color: transparent !important;
         background-image: linear-gradient(125deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2),70%);
-        backdrop-filter: blur(.5em) !important;
+        backdrop-filter: blur(1.5em) !important;
     }
 }
 
