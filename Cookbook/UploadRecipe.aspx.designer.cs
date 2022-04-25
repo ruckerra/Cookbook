@@ -285,6 +285,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCalories;
 
         /// <summary>
+        /// rvCalories control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvCalories;
+
+        /// <summary>
         /// txtFat control.
         /// </summary>
         /// <remarks>
@@ -292,6 +301,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFat;
+
+        /// <summary>
+        /// rvFat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvFat;
 
         /// <summary>
         /// txtCarbs control.
@@ -303,6 +321,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.TextBox txtCarbs;
 
         /// <summary>
+        /// rvCarbs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvCarbs;
+
+        /// <summary>
         /// txtFiber control.
         /// </summary>
         /// <remarks>
@@ -310,6 +337,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFiber;
+
+        /// <summary>
+        /// rvFiber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvFiber;
 
         /// <summary>
         /// txtProtein control.
@@ -321,6 +357,15 @@ namespace Cookbook
         protected global::System.Web.UI.WebControls.TextBox txtProtein;
 
         /// <summary>
+        /// rvProtein control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvProtein;
+
+        /// <summary>
         /// txtServings control.
         /// </summary>
         /// <remarks>
@@ -328,6 +373,15 @@ namespace Cookbook
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtServings;
+
+        /// <summary>
+        /// rvServings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvServings;
 
         /// <summary>
         /// txtNutritionNotes control.
