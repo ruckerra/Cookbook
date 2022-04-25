@@ -58,10 +58,10 @@
             </div>
         </div>
 
-        <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="true"></asp:Label>
-        <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="true"></asp:Label>
+        <asp:Label ID="session_id_label" runat="server" Text="User_uid: " Visible="false"></asp:Label>
+        <asp:Label ID="active_user_uid" runat="server" Text="[NULL]" Visible="false"></asp:Label>
 
-        <div class="container body-content">
+        <div class="container body-content frost">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />

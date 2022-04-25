@@ -4,8 +4,8 @@
         <div class="col-md-12">
             <h2>Registered User Accounts</h2>
 
-            <asp:Panel ID="pnlDisplayUsers" runat="server">
-                <asp:GridView ID="gvDisplayUsers" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="user_uid" OnRowCommand="gvDisplayUsers_RowCommand" OnRowDataBound="gvDisplayUsers_RowDataBound">
+            <asp:Panel CssClass="frost" ID="pnlDisplayUsers" runat="server">
+                <asp:GridView ID="gvDisplayUsers" runat="server" CssClass="table tbl" AutoGenerateColumns="False" DataKeyNames="user_uid" OnRowCommand="gvDisplayUsers_RowCommand" OnRowDataBound="gvDisplayUsers_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="user_uid" HeaderText="User UUID" />
 		                <asp:BoundField DataField="username" HeaderText="Username" />
@@ -13,12 +13,12 @@
                         <asp:BoundField DataField="date_reg" HeaderText="Date Registered" />
                         <asp:TemplateField HeaderText="" >
                             <ItemTemplate>
-                                <asp:Button ID="btnMod" runat="server" CssClass="btn btn-info" Text="Give Admin" OnClientClick="return confirm('Are you sure you want to mod this user?');" CommandName="GiveAdmin" Visible="false"/>
+                                <asp:Button ID="btnMod" runat="server" CssClass="btn btn-info btn-frost btn-oline-info" Text="Give Admin" OnClientClick="return confirm('Are you sure you want to mod this user?');" CommandName="GiveAdmin" Visible="false"/>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Delete User">
                             <ItemTemplate>
-                                <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Delete User" OnClientClick="return confirm('Are you sure you want to delete this user?');" CommandName="ReqUserDel" />
+                                <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger btn-frost btn-oline-danger" Text="Delete User" OnClientClick="return confirm('Are you sure you want to delete this user?');" CommandName="ReqUserDel" />
                             </ItemTemplate>
                         </asp:TemplateField>
 

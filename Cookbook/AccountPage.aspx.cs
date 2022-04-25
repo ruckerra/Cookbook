@@ -48,7 +48,7 @@ namespace Cookbook
                 sb.Append("<img class=\"float-left\" src ='/Content/Images/");
                 img_path = img_path == null || img_path == "" ? "Default/" + "avatar.png" : "Avatars/" + img_path;
                 sb.Append(img_path);
-                sb.Append("' style=\"vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;margin-left:-25%\">");
+                sb.Append("' style=\"vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;\">");
                 user_img.Text = sb.ToString();
 
                 sb.Clear();

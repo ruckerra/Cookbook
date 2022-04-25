@@ -1,8 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ViewRecipe.aspx.cs" Inherits="Cookbook.ViewRecipe" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
-        <div class="col-sm-3">
-            <asp:Image ID="imgRecipe" runat="server" style="vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;margin-left:-25%"/>
+        <div class="col-sm-3" style="width:300px;height:300px;padding:0">
+            <div>
+                <asp:Image ID="imgRecipe" runat="server" style="vertical-align:middle;border-radius:50%;width:300px;height:300px;position:relative;overflow:hidden;"/>
+            </div>
         </div>
         <div class="col-sm-5">
             <asp:Label ID="lblRecipeName" runat="server">Recipe Name: </asp:Label><br />
@@ -18,7 +20,7 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <asp:Button ID="btnReturn" runat="server" Text="Go Back" CssClass="btn btn-primary" OnClick="btnReturn_Click" />
+            <asp:Button ID="btnReturn" runat="server" Text="Go Back" CssClass="btn btn-primary btn-frost btn-oline-primary" OnClick="btnReturn_Click" />
         </div>
     </div>
 </asp:Content>

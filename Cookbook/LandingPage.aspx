@@ -5,7 +5,7 @@
         <div class ="row">
             <div class="col-md-2">
                 <asp:Label for="txtRecipeName" runat="server">Recipe Name: </asp:Label>
-                <asp:TextBox ID="txtRecipeName" runat="server" CssClass="form-control"></asp:TextBox>
+                <asp:TextBox ID="txtRecipeName" runat="server" CssClass="form-control npt"></asp:TextBox>
                 &nbsp; 
                 <asp:Label for="dlRecipeType" runat="server">Recipe Type:</asp:Label> 
                 <asp:DropDownList ID="dlRecipeType" runat="server" CssClass="form-select">
@@ -32,13 +32,13 @@
         <br />
         <div class="row" style="margin-bottom:1rem">
             <div class="col-md-12">
-                <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary" Height="34px" Text="Search" Width="81px" OnClick="btnSearch_Click" />
-                <asp:Button ID="btnCancelSearch" runat="server" CssClass="btn btn-Primary" OnClick="btnCancelSearch_Click" Text="Cancel" />
+                <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary btn-frost btn-oline-primary" Height="34px" Text="Search" Width="81px" OnClick="btnSearch_Click" />
+                <asp:Button ID="btnCancelSearch" runat="server" CssClass="btn btn-secondary btn-frost btn-oline-secondary" OnClick="btnCancelSearch_Click" Text="Cancel" />
             </div>
         </div>
     </asp:Panel>
-    <asp:Panel ID="pnlRecipeList" runat="server">
-        <asp:GridView ID="gvRecipeList" runat="server" CssClass="table table-striped" AutoGenerateColumns="False" OnRowCommand="gvRecipeList_RowCommand" OnRowDataBound="gvRecipeList_RowDataBound" DataKeyNames="recipe_name">
+    <asp:Panel CssClass="frost" ID="pnlRecipeList" runat="server">
+        <asp:GridView ID="gvRecipeList" runat="server" CssClass="table tbl" AutoGenerateColumns="False" OnRowCommand="gvRecipeList_RowCommand" OnRowDataBound="gvRecipeList_RowDataBound" DataKeyNames="recipe_name">
             <Columns>
                 <asp:BoundField DataField="recipe_name" HeaderText="Recipe Name" />
                 <asp:BoundField DataField="denomination" HeaderText="Type" />
@@ -47,8 +47,8 @@
                 <asp:BoundField DataField="gluten_free" HeaderText="Gluten Free" />
                 <asp:TemplateField HeaderText="Save Recipe">
                     <ItemTemplate>
-                        <asp:Button ID="btnFavRecipe" runat="server" Text="Favorite" CssClass="btn btn-primary" CommandName="FavRecipe"/>
-                        <asp:Button ID="btnViewRecipe" runat="server" Text =" View" CssClass="btn btn-primary" CommandName="ViewRecipe" />
+                        <asp:Button ID="btnFavRecipe" runat="server" Text="Favorite" CssClass="btn btn-primary btn-frost btn-oline-primary" CommandName="FavRecipe"/>
+                        <asp:Button ID="btnViewRecipe" runat="server" Text =" View" CssClass="btn btn-info btn-frost btn-oline-info" CommandName="ViewRecipe" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

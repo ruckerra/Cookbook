@@ -1,7 +1,103 @@
 ﻿/* Move down content because we have a fixed navbar that is 50px tall */
 body {
+    background-color: #f0ffff; /*#98c0db; #e6f5ff;*/
+    background-image: url(/Content/Images/Default/background1.gif);
+    background-attachment: fixed;
     padding-top: 50px;
     padding-bottom: 20px;
+    color: #02111b !important;
+    font-family: Helvetica;
+}
+
+.btn-frost {
+    backdrop-filter: blur(10px) !important;
+    box-shadow: inset 1px 1px rgb(255 255 255 / 20%), inset -1px -1px rgb(255 255 255 / 10%), 1px 3px 24px -1px rgb(0 0 0 / 15%);
+    transition: transform .25s;
+}
+
+.btn-frost:hover {
+    transform:scale(1.25);
+}
+
+.btn-oline-primary {
+    background-color: rgb(0 123 255 / 60%) !important;
+}
+
+.btn-oline-secondary {
+    border: 1px solid rgb(108 117 125);
+    color:#fff;
+    background-color: rgb(108 117 125 / 60%) !important;
+}
+
+.btn-oline-secondary:hover {
+    color: #fff !important;
+    background-color: rgb(108 117 125 / 60%) !important;
+}
+
+.btn-oline-success {
+    background-color: rgb(40 167 69 / 60%) !important;
+}
+
+.btn-oline-danger {
+    background-color: rgb(220 53 69 / 60%) !important;
+}
+
+.btn-oline-warning {
+    background-color: rgb(255 193 7 / 60%) !important;
+}
+
+.btn-oline-info {
+    background-color: rgb(23 162 184 / 60%) !important;
+}
+
+.btn-oline-light {
+    background-color: rgb(248 249 250 / 60%) !important;
+}
+
+.btn-oline-dark {
+    background-color: rgb(52 58 64 / 60%) !important;
+}
+
+/*
+.btn-oline-row {
+    background-color: rgb(175 200 229 / 30%) !important;
+    border-color:transparent !important;
+}
+*/
+
+.npt {
+    border: solid 1px #cddddf !important;
+    background-color: rgb(255 255 255 / 46%);
+    border-radius:4px !important;
+    margin-bottom:2rem;
+}
+
+.tbl {
+    border-color: transparent !important;
+    backdrop-filter: blur(10px);
+}
+
+.frost {
+    padding: 20px !important;
+    border-radius: 20px;
+    /*background-color: rgba(255, 255, 255, .15);*/
+    border: none;
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+    background-color: rgba(226, 241, 242, 0.7);
+    background-image: linear-gradient(125deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2),70%);
+}
+
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter:none)) {
+    .frost {
+        padding: 20px !important;
+        border-radius: 20px;
+        /*background-color: rgba(255, 255, 255, .15);*/
+        border: none;
+        box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2), inset -1px -1px rgba(255, 255, 255, 0.1), 1px 3px 24px -1px rgba(0, 0, 0, 0.15);
+        background-color: transparent !important;
+        background-image: linear-gradient(125deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2),70%);
+        backdrop-filter: blur(.5em) !important;
+    }
 }
 
 /* Wrapping element */
@@ -26,6 +122,8 @@ textarea {
     }
 
     .body-content {
+        margin-top: 2rem;
+        font-weight: 700;
         padding: 0;
     }
 }

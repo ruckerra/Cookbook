@@ -157,9 +157,9 @@ namespace Cookbook
                     }
                 }
                 e.Row.Cells[3].Text = e.Row.Cells[3].Text == "1" ? "True" : "False";
-                e.Row.Cells[3].ForeColor = e.Row.Cells[3].Text == "True" ? Color.SeaGreen : Color.Red;
+                e.Row.Cells[3].ForeColor = e.Row.Cells[3].Text == "True" ? Color.FromArgb(0, 141, 62) : Color.Red;
                 e.Row.Cells[4].Text = e.Row.Cells[4].Text == "1" ? "True" : "False";
-                e.Row.Cells[4].ForeColor = e.Row.Cells[4].Text == "True" ? Color.SeaGreen : Color.Red;
+                e.Row.Cells[4].ForeColor = e.Row.Cells[4].Text == "True" ? Color.FromArgb(0, 141, 62) : Color.Red;
                 
             }
         }
