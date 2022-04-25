@@ -122,6 +122,7 @@
             <div class="col-md-6">
                 <asp:TextBox ID="txtCalories" runat="server"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="rfvCalories" runat="server" ErrorMessage="Required" ControlToValidate="txtCalories" ForeColor="Red" ValidationGroup="Nutrition"></asp:RequiredFieldValidator>
+                <asp:RangeValidator ID="rvCalories"  runat="server" ErrorMessage="Value must be an integer" ControlToValidate="txtCalories" ForeColor="Red" MaximumValue="5000" MinimumValue="0" Type="Integer" ValidationGroup="Nutrition"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
@@ -130,6 +131,7 @@
             </div>
             <div class="col-md-6">
                 <asp:TextBox ID="txtFat" runat="server"></asp:TextBox>
+                <asp:RangeValidator ID="rvFat" runat="server" ControlToValidate="txtFat" ErrorMessage="Value must be an integer" ForeColor="Red" MaximumValue="5000" MinimumValue="0" ValidationGroup="Nutrition" Type="Integer"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
@@ -138,6 +140,7 @@
             </div>
             <div class="col-md-6">
                 <asp:TextBox ID="txtCarbs" runat="server"></asp:TextBox>
+                <asp:RangeValidator ID="rvCarbs" runat="server" ErrorMessage="Value must be an integer" ValidationGroup="Nutrition" ControlToValidate="txtCarbs" MaximumValue="5000" MinimumValue="0" ForeColor="Red" Type="Integer"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
@@ -146,6 +149,7 @@
             </div>
             <div class="col-md-6">
                 <asp:TextBox ID="txtFiber" runat="server"></asp:TextBox>
+                <asp:RangeValidator ID="rvFiber" runat="server" ErrorMessage="Value must be an integer" ControlToValidate="txtFiber" ForeColor="Red" MaximumValue="5000" MinimumValue="0" Type="Integer" ValidationGroup="Nutrition"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
@@ -154,6 +158,7 @@
             </div>
             <div class="col-md-6">
                 <asp:TextBox ID="txtProtein" runat="server"></asp:TextBox>
+                <asp:RangeValidator ID="rvProtein" runat="server" ErrorMessage="Value must be an integer" ControlToValidate="txtProtein" ForeColor="Red" MaximumValue="5000" MinimumValue="0" Type="Integer" ValidationGroup="Nutrition"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
@@ -162,6 +167,7 @@
             </div>
             <div class="col-md-6">
                 <asp:TextBox ID="txtServings" runat="server"></asp:TextBox>
+                <asp:RangeValidator ID="rvServings" runat="server" ErrorMessage="Value must be an integer" ControlToValidate="txtServings" ForeColor="Red" MaximumValue="1000" MinimumValue="0" Type="Integer" ValidationGroup="Nutrition"></asp:RangeValidator>
             </div>
         </div>
         <div class="row">
