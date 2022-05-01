@@ -12,37 +12,22 @@ namespace Cookbook
 {
     public partial class ViewUsers : System.Web.UI.Page
     {
+        HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            if (Request.Cookies.Get("active_user_uid") != null)
+            c = Request.Cookies.Get("active_user_uid");
+            SiteMaster.Check_Authority(ref c);
+            if (Session["Admin"] != null)
             {
-                using(SqlConnection conn = new SqlConnection())
+                if (!Page.IsPostBack)
                 {
-                    conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                    string q = "SELECT admin FROM users WHERE user_uid = @uuid";
-                    SqlCommand cmd = new SqlCommand(q,conn);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                    conn.Open();
-                    SqlDataReader sdr = cmd.ExecuteReader();
-                    if (sdr.HasRows)
-                    {
-                        if (sdr.Read())
-                        {
-                            if (sdr["admin"].ToString() == "True")
-                            {
-                                if (!Page.IsPostBack)
-                                {
-                                    BindRecipeList();
-                                }
-                                return;
-                            }
-                        }
-                    }
-                    conn.Close();
+                    BindRecipeList();
                 }
             }
-            Response.Redirect("~/LandingPage.aspx");
+            else
+            {
+                Response.Redirect("~/LandingPage.aspx");
+            }
         }
         private void BindRecipeList()
         {
@@ -73,14 +58,15 @@ namespace Cookbook
             {
                 Button deleteButton = e.Row.FindControl("btnDelete") as Button;
                 Button modUser = e.Row.FindControl("btnMod") as Button;
-                
+
                 //Check if cookies are null, and disable delete button for the active user themselves
-                if (Request.Cookies.Get("active_user_uid") == null || (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Request.Cookies.Get("active_user_uid").Value)
+                if (Session["Admin"] == null || (gvDisplayUsers.DataKeys[e.Row.RowIndex].Value).ToString() == Session["Admin"].ToString())
                 {
                     deleteButton.Enabled = false;
                     modUser.Enabled = false;
                     modUser.Visible = false;
-                } else
+                }
+                else
                 {
                     //Disable delete button assigned to mods
                     using (SqlConnection conn = new SqlConnection())
@@ -114,13 +100,14 @@ namespace Cookbook
                         {
                             if (sdr.Read())
                             {
-                                if (sdr["user_uid"].ToString() == Request.Cookies.Get("active_user_uid").Value)
+                                if (sdr["user_uid"].ToString() == Session["Admin"].ToString())
                                 {
                                     modUser.Visible = true;
                                     deleteButton.Enabled = true;
                                 }
                             }
-                        } else
+                        }
+                        else
                         {
                             modUser.Visible = false;
                         }
@@ -128,10 +115,10 @@ namespace Cookbook
                     }
 
                     //Change text if user is already mod
-                    using(SqlConnection conn = new SqlConnection())
+                    using (SqlConnection conn = new SqlConnection())
                     {
                         conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                        SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid",conn);
+                        SqlCommand cmd = new SqlCommand("SELECT admin FROM users WHERE user_uid = @uuid", conn);
                         cmd.Parameters.AddWithValue("@uuid", gvDisplayUsers.DataKeys[e.Row.RowIndex].Value.ToString());
                         conn.Open();
                         SqlDataReader sdr = cmd.ExecuteReader();
@@ -151,13 +138,13 @@ namespace Cookbook
             if (e.CommandName == "ReqUserDel")
             {
                 string uuid = e.CommandArgument.ToString();
-                if (Request.Cookies.Get("active_user_uid") != null && !(Request.Cookies.Get("active_user_uid").Value == uuid))
+                if (Session["Admin"] != null && !(Session["Admin"].ToString() == uuid))
                 {
                     DeleteUser(uuid);
                 }
                 Response.Redirect("~/ViewUsers.aspx");
             }
-            if(e.CommandName == "GiveAdmin")
+            if (e.CommandName == "GiveAdmin")
             {
                 string uuid = e.CommandArgument.ToString();
                 string owner_uid = null;
@@ -177,10 +164,7 @@ namespace Cookbook
                     }
                     conn.Close();
                 }
-                if (Request.Cookies.Get("active_user_uid") != null &&
-                    owner_uid != null &&
-                    Request.Cookies.Get("active_user_uid").Value == owner_uid &&
-                    Request.Cookies.Get("active_user_uid").Value != uuid)
+                if (Session["Admin"] != null && owner_uid != null && Session["Admin"].ToString() == owner_uid && Session["Admin"].ToString() != uuid)
                 {
                     ModUser(uuid);
                 }
@@ -189,6 +173,11 @@ namespace Cookbook
 
         private void DeleteUser(string uuid)
         {
+            SiteMaster.Check_Authority(ref c);
+            if (Session["Admin"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
             using (SqlConnection conn = new SqlConnection())
             {
                 conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -208,7 +197,6 @@ namespace Cookbook
                 conn.Close();
                 BindRecipeList();
             }
-
         }
 
         private void ModUser(string uuid)

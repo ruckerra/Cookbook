@@ -14,9 +14,12 @@ namespace Cookbook
 {
     public partial class LandingPage : System.Web.UI.Page
     {
+        HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(Request.Cookies.Get("active_user_uid") != null)
+            c = Request.Cookies.Get("active_user_uid");
+            SiteMaster.Check_Authority(ref c);
+            if (c != null || Session["Admin"] != null)
             {
                 chkFavorites.Visible = true;
             }
@@ -28,14 +31,12 @@ namespace Cookbook
 
         private void BindRecipeList()
         {
-
-            
             StringBuilder sb = new StringBuilder("SELECT recipe_name, denomination, total_time, vegetarian, gluten_free FROM {0}recipes{1}");
             int l = sb.Length;
-            
-            if(txtRecipeName.Text != "")
+
+            if (txtRecipeName.Text != "")
             {
-                StringBuilder str = new StringBuilder((sb.Length == l ? " WHERE" : " AND" ) + " LOWER(recipe_name) LIKE LOWER(");
+                StringBuilder str = new StringBuilder((sb.Length == l ? " WHERE" : " AND") + " LOWER(recipe_name) LIKE LOWER(");
                 string[] st = txtRecipeName.Text.Split();
                 if (st.Length > 0)
                 {
@@ -54,7 +55,7 @@ namespace Cookbook
                 sb.Append(str.ToString());
             }
 
-            if(dlRecipeType.Text != "")
+            if (dlRecipeType.Text != "")
             {
                 sb.Append((sb.Length == l ? " WHERE" : " AND") + " denomination = @denom");
             }
@@ -71,12 +72,12 @@ namespace Cookbook
             SqlConnection conn;
             SqlCommand cmd;
             string fmt = "";
-            if (chkFavorites.Checked && Request.Cookies.Get("active_user_uid").Value != null)
+            if (chkFavorites.Checked && (c != null || Session["Admin"] != null))
             {
                 fmt = " FULL OUTER JOIN users_favorites ON recipes.recipe_id = users_favorites.recipe_id)";
                 sb.Append((sb.Length == l ? " WHERE" : " AND") + " user_uid = @uuid");
             }
-            
+
             conn = new SqlConnection();
             conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
 
@@ -84,11 +85,13 @@ namespace Cookbook
             DataTable dt = new DataTable();
 
             cmd = new SqlCommand(String.Format(sb.ToString(), fmt == "" ? "" : "(", fmt == "" ? "" : fmt), conn);
-            if (Request.Cookies.Get("active_user_uid") != null) { 
+            if (c != null || Session["Admin"] != null)
+            {
                 try
                 {
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
-                } catch (Exception e) { }
+                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
+                }
+                catch (Exception e) { }
             }
             try
             {
@@ -99,8 +102,9 @@ namespace Cookbook
             try
             {
                 cmd.Parameters.AddWithValue("@denom", dlRecipeType.Text);
-            } catch (Exception e) { }
-            
+            }
+            catch (Exception e) { }
+
             sda.SelectCommand = cmd;
 
             sda.Fill(dt);
@@ -134,18 +138,18 @@ namespace Cookbook
                 fav.CommandArgument = e.Row.Cells[0].Text;
                 Button view = e.Row.FindControl("btnViewRecipe") as Button;
                 view.CommandArgument = e.Row.Cells[0].Text;
-
-                if (Request.Cookies.Get("active_user_uid") == null)
+                if (!(c == null ^ Session["Admin"] == null))
                 {
                     fav.Enabled = false;
-                } else
+                }
+                else
                 {
                     using (SqlConnection conn = new SqlConnection())
                     {
                         conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
                         string q = "SELECT *  FROM users_favorites WHERE user_uid = @uuid AND recipe_id = (SELECT recipe_id FROM recipes WHERE recipe_name = @recipe_name)";
                         SqlCommand cmd = new SqlCommand(q, conn);
-                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                        cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                         cmd.Parameters.AddWithValue("@recipe_name", (gvRecipeList.DataKeys[e.Row.RowIndex].Value).ToString());
                         conn.Open();
                         SqlDataReader sdr = cmd.ExecuteReader();
@@ -160,7 +164,6 @@ namespace Cookbook
                 e.Row.Cells[3].ForeColor = e.Row.Cells[3].Text == "True" ? Color.FromArgb(0, 141, 62) : Color.Red;
                 e.Row.Cells[4].Text = e.Row.Cells[4].Text == "1" ? "True" : "False";
                 e.Row.Cells[4].ForeColor = e.Row.Cells[4].Text == "True" ? Color.FromArgb(0, 141, 62) : Color.Red;
-                
             }
         }
 
@@ -206,7 +209,9 @@ namespace Cookbook
 
         protected void FavoriteRecipe(string recipe_name)
         {
-            if (Page.IsValid) { 
+            SiteMaster.Check_Authority(ref c);
+            if (Page.IsValid)
+            {
                 using (SqlConnection conn = new SqlConnection())
                 {
                     conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
@@ -215,10 +220,6 @@ namespace Cookbook
                     string recipe_id = null;
                     conn.Open();
                     SqlDataReader sdr = cmd.ExecuteReader();
-                    if (!sdr.HasRows)
-                    {
-                        Response.Redirect("~/LandingPage.aspx");
-                    }
                     sdr.Read();
                     recipe_id = sdr["recipe_id"].ToString();
                     conn.Close();
@@ -226,7 +227,7 @@ namespace Cookbook
 
                     cmd = new SqlCommand("SELECT * FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
                     cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                     conn.Open();
                     sdr = cmd.ExecuteReader();
                     if (sdr.HasRows)
@@ -235,7 +236,7 @@ namespace Cookbook
 
                         cmd = new SqlCommand("DELETE FROM users_favorites WHERE recipe_id = @recipe_id AND user_uid = @uuid", conn);
                         cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
-                        cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                        cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         conn.Close();
@@ -246,7 +247,7 @@ namespace Cookbook
                     cmd.Dispose();
 
                     cmd = new SqlCommand("INSERT INTO users_favorites(user_uid, recipe_id) VALUES(@uuid, @recipe_id)", conn);
-                    cmd.Parameters.AddWithValue("@uuid", Request.Cookies.Get("active_user_uid").Value);
+                    cmd.Parameters.AddWithValue("@uuid", Session["Admin"] == null ? c.Value : Session["Admin"].ToString());
                     cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
                     conn.Open();
                     cmd.ExecuteNonQuery();

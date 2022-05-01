@@ -13,9 +13,12 @@ namespace Cookbook
 {
     public partial class RegisterAccount : System.Web.UI.Page
     {
+        HttpCookie c = null;
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request.Cookies.Get("active_user_uid") != null)
+            c = Request.Cookies.Get("active_user_uid");
+            SiteMaster.Check_Authority(ref c);
+            if (c != null || Session["Admin"] != null)
             {
                 Response.Redirect("~/AccountPage.aspx");
             }
