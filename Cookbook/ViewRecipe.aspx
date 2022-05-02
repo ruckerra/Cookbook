@@ -48,7 +48,6 @@
     </asp:Panel>
     <div class="row">
         <div class="col-sm-6">
-            <asp:Button ID="btnShowNutrition" runat="server" Text="Show Nutrition Info" CssClass="btn btn-primary btn-frost btn-oline-primary" Visible="false" OnClick="btnShowNutrition_Click" />
             <asp:Button ID="btnReturn" runat="server" Text="Go Back" CssClass="btn btn-primary btn-frost btn-oline-primary" OnClick="btnReturn_Click" />
         </div>
     </div>

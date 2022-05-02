@@ -97,7 +97,15 @@ namespace Cookbook
 
                         if (sdr.HasRows)
                         {
-                            btnShowNutrition.Visible = true;
+                            pnlNutritionInfo.Visible = true;
+                            sdr.Read();
+                            lblCalories.Text += sdr["calories"].ToString();
+                            lblFat.Text += sdr["fat"].ToString();
+                            lblCarbs.Text += sdr["carbs"].ToString();
+                            lblFiber.Text += sdr["fiber"].ToString();
+                            lblProtein.Text += sdr["protein"].ToString();
+                            lblServings.Text += sdr["servings"].ToString();
+                            lblNutritionNotes.Text += sdr["notes"].ToString();
                         }
                     }
                 } else
@@ -110,40 +118,6 @@ namespace Cookbook
         protected void btnReturn_Click(object sender, EventArgs e)
         {
             Response.Redirect("LandingPage.aspx");
-        }
-
-        protected void btnShowNutrition_Click(object sender, EventArgs e)
-        {
-            pnlNutritionInfo.Visible = true;
-            btnShowNutrition.Visible = false;
-            using (SqlConnection conn = new SqlConnection())
-            {
-                conn.ConnectionString = WebConfigurationManager.ConnectionStrings["CookbookConnectionString"].ConnectionString;
-                SqlCommand cmd = new SqlCommand();
-
-                int recipe_id = int.Parse(lblRecipeId.Text);
-
-                cmd.CommandText = "SELECT * FROM nutrition WHERE recipe_id = @recipe_id";
-                cmd.Parameters.AddWithValue("@recipe_id", recipe_id);
-                cmd.Connection = conn;
-
-                conn.Open();
-
-                SqlDataReader sdr = cmd.ExecuteReader();
-
-                if (sdr.HasRows)
-                {
-                    sdr.Read();
-
-                    lblCalories.Text += sdr["calories"].ToString();
-                    lblFat.Text += sdr["fat"].ToString();
-                    lblCarbs.Text += sdr["carbs"].ToString();
-                    lblFiber.Text += sdr["fiber"].ToString();
-                    lblProtein.Text += sdr["protein"].ToString();
-                    lblServings.Text += sdr["servings"].ToString();
-                    lblNutritionNotes.Text += sdr["notes"].ToString();
-                }
-            }
         }
 
     }
